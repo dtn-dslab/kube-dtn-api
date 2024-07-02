@@ -18,48 +18,73 @@ package v1
 
 import (
 	common "dslab.sjtu/kube-dtn/api/v1/common"
+	"dslab.sjtu/kube-dtn/internal/api/v1/pb"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// TopologySpec defines the desired state of Topology
-type TopologySpec struct {
+// NetworkNodeSpec defines the desired state of NetworkNode
+type NetworkNodeSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
+	// Name equates to the name of the network Pod
+	Name string `json:"name"`
+
+	// Namespace equates to the namespace of the network Pod
+	Namespace string `json:"namespace"`
+
+	// NetworkIntfs is a list of network interfaces
 	// +optional
-	Links []common.Link `json:"links"`
+	NetworkIntfs []common.NetworkIntf `json:"network_intfs,omitempty"`
 }
 
-// TopologyStatus defines the observed state of Topology
-type TopologyStatus struct {
+func (n *NetworkNodeSpec) ToProto() *pb.NetworkNode {
+	return &pb.NetworkNode{
+		Name:      n.Name,
+		Namespace: n.Namespace,
+		NetworkIntfs: func() []*pb.NetworkIntf {
+			var networkIntfs []*pb.NetworkIntf
+			for _, networkIntf := range n.NetworkIntfs {
+				networkIntfs = append(networkIntfs, networkIntf.ToProto())
+			}
+			return networkIntfs
+		}(),
+	}
+}
+
+// NetworkNodeStatus defines the observed state of NetworkNode
+type NetworkNodeStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// Ready equates to the readiness of the network node
+	Ready bool `json:"ready"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
-// Topology is the Schema for the topologies API
-type Topology struct {
+// NetworkNode is the Schema for the networknodes API
+type NetworkNode struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   TopologySpec   `json:"spec,omitempty"`
-	Status TopologyStatus `json:"status,omitempty"`
+	Spec   NetworkNodeSpec   `json:"spec,omitempty"`
+	Status NetworkNodeStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// TopologyList contains a list of Topology
-type TopologyList struct {
+// NetworkNodeList contains a list of NetworkNode
+type NetworkNodeList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Topology `json:"items"`
+	Items           []NetworkNode `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&Topology{}, &TopologyList{})
+	SchemeBuilder.Register(&NetworkNode{}, &NetworkNodeList{})
 }

@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+// import "google/protobuf/empty.proto";
+
+package pb;
+
+option go_package = "internal/api/v1/pb";
+
+message NetworkIntf {
+  int64 uid = 1;
+  string name = 2;
+  string mac = 3;
+  string ipv4 = 4;
+  string ipv6 = 5;
+}
+
+message NetworkNode {
+  string name = 1;
+  string namespace = 2;
+  repeated NetworkIntf network_intfs = 3;
+  PodStatus pod_status = 4;
+}
+
+message PodStatus {
+  string daemon_ip = 1;
+  string net_ns = 2;
+  string pod_type = 3;
+  string pod_ip = 4;
+}
+
+message Link {
+  int64 uid = 1;
+  int64 src = 2;
+  int64 dst = 3;
+  LinkProperties properties = 4;
+  bool uni_directional = 5;
+}
+
+message LinkProperties {
+  string latency = 1;
+  string latency_corr = 2;
+  string jitter = 3;
+  string loss = 4;
+  string loss_corr = 5;
+  string rate = 6;
+  uint32 gap = 7;
+  string duplicate = 8;
+  string duplicate_corr = 9;
+  string reorder_prob = 10;
+  string reorder_corr = 11;
+  string corrupt_prob = 12;
+  string corrupt_corr = 13;
+}
+
+message SetupPodQuery {
+  string name = 1;
+  string kube_ns = 2;
+  string net_ns = 3;
+}
+
+message PodQuery {
+  string name = 1;
+  string kube_ns = 2;
+}
+
+message InternalLink {
+  int64 uid = 1;
+
+  string net_ns = 2;
+  string remote = 3;
+
+  string local_name = 4;
+  string local_intf = 5;
+  string local_mac = 6;
+
+  string peer_name = 7;
+  string peer_intf = 8;
+  string peer_mac = 9;
+
+  LinkProperties properties = 10;
+}
+
+message LinksBatchQuery {
+  repeated InternalLink links = 1;
+}
+
+message MarkPodQuery {
+  string name = 1;
+  string namespace = 2;
+}
+
+message BoolResponse {
+  bool response = 1;
+}
+
+service Controller {
+  rpc ApplyLinks (LinksBatchQuery) returns (BoolResponse);
+
+  rpc MarkPod (MarkPodQuery) returns (BoolResponse);
+  rpc UnmarkPod (MarkPodQuery) returns (BoolResponse);
+}
+
+service Daemon {
+  rpc AddLinks (LinksBatchQuery) returns (BoolResponse);
+  rpc DeleteLinks (LinksBatchQuery) returns (BoolResponse);
+  rpc UpdateLinks (LinksBatchQuery) returns (BoolResponse);
+
+  rpc ConfigurePod (NetworkNode) returns (BoolResponse);
+  rpc UnconfigurePod (NetworkNode) returns (BoolResponse);
+
+  rpc SetupPod (SetupPodQuery) returns (BoolResponse);
+  rpc DestroyPod (PodQuery) returns (BoolResponse);
+}
+
+service VMSidecar {
+  rpc AddVMLinks (LinksBatchQuery) returns (BoolResponse);
+  rpc DelVMLinks (LinksBatchQuery) returns (BoolResponse);
+  rpc UpdateVMLinks (LinksBatchQuery) returns (BoolResponse);
+}

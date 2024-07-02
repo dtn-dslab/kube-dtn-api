@@ -1,41 +1,23 @@
 package common
 
 import (
-	pb "dslab.sjtu/kube-dtn/proto/v1"
+	pb "dslab.sjtu/kube-dtn/internal/api/v1/pb"
 )
 
 type Link struct {
-	// Local interface name
-	LocalIntf string `json:"local_intf"`
-
-	// Local IP address
-	// +optional
-	// +kubebuilder:validation:Pattern=`^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))?)?$`
-	LocalIP string `json:"local_ip"`
-
-	// Local MAC address, e.g. 00:00:5e:00:53:01 or 00-00-5e-00-53-01
-	// +optional
-	// +kubebuilder:validation:Pattern=`^(([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2})?$`
-	LocalMAC string `json:"local_mac"`
-
-	// Peer interface name
-	PeerIntf string `json:"peer_intf"`
-
-	// Peer IP address
-	// +optional
-	// +kubebuilder:validation:Pattern=`^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))?)?$`
-	PeerIP string `json:"peer_ip"`
-
-	// Peer MAC address, e.g. 00:00:5e:00:53:01 or 00-00-5e-00-53-01
-	// +optional
-	// +kubebuilder:validation:Pattern=`^(([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2})?$`
-	PeerMAC string `json:"peer_mac"`
-
-	// Name of the peer pod
-	PeerPod string `json:"peer_pod"`
-
 	// Unique identifier of a p2p link
 	UID int `json:"uid"`
+
+	// Source node of the link
+	Src int `json:"src"`
+
+	// Destination node of the link
+	Dst int `json:"dst"`
+
+	// Uni-directional link, default is false to make it bi-directional
+	// +optional
+	// +kubebuilder:default=false
+	Unidirectional bool `json:"unidirectional,omitempty"`
 
 	// Link properties, latency, bandwidth, etc
 	// +optional
@@ -103,16 +85,11 @@ type LinkProperties struct {
 
 func (l *Link) ToProto() *pb.Link {
 	return &pb.Link{
-		PeerPod:    l.PeerPod,
-		LocalIntf:  l.LocalIntf,
-		PeerIntf:   l.PeerIntf,
-		LocalIp:    l.LocalIP,
-		PeerIp:     l.PeerIP,
-		LocalMac:   l.LocalMAC,
-		PeerMac:    l.PeerMAC,
-		Uid:        int64(l.UID),
-		Properties: l.Properties.ToProto(),
-		Detect:     false,
+		Uid:            int64(l.UID),
+		Src:            int64(l.Src),
+		Dst:            int64(l.Dst),
+		Properties:     l.Properties.ToProto(),
+		UniDirectional: l.Unidirectional,
 	}
 }
 
