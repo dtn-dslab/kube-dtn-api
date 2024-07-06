@@ -71,3 +71,13 @@ Then you can run the following command to generate gRPC code:
 ```bash
 make proto
 ```
+
+### Modify your go.mod file
+
+You should add the following lines to your go.mod file:
+
+```go
+replace (
+	dslab.sjtu/kube-dtn/api => ./external_api
+)
+```

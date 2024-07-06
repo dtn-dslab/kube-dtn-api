@@ -1,7 +1,7 @@
 package common
 
 import (
-	"dslab.sjtu/kube-dtn/internal/api/v1/pb"
+	"dslab.sjtu/kube-dtn/api/v1/pb"
 )
 
 type NetworkIntf struct {

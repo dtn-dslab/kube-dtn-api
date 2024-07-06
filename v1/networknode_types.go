@@ -18,7 +18,7 @@ package v1
 
 import (
 	common "dslab.sjtu/kube-dtn/api/v1/common"
-	"dslab.sjtu/kube-dtn/internal/api/v1/pb"
+	"dslab.sjtu/kube-dtn/api/v1/pb"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
