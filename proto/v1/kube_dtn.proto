@@ -81,6 +81,10 @@ message InternalLink {
 }
 
 message LinksBatchQuery {
+  repeated Link links = 1;
+}
+
+message InternalLinksBatchQuery {
   repeated InternalLink links = 1;
 }
 
@@ -101,9 +105,9 @@ service Controller {
 }
 
 service Daemon {
-  rpc AddLinks (LinksBatchQuery) returns (BoolResponse);
-  rpc DeleteLinks (LinksBatchQuery) returns (BoolResponse);
-  rpc UpdateLinks (LinksBatchQuery) returns (BoolResponse);
+  rpc AddLinks (InternalLinksBatchQuery) returns (BoolResponse);
+  rpc DeleteLinks (InternalLinksBatchQuery) returns (BoolResponse);
+  rpc UpdateLinks (InternalLinksBatchQuery) returns (BoolResponse);
 
   rpc ConfigurePod (NetworkNode) returns (BoolResponse);
   rpc UnconfigurePod (NetworkNode) returns (BoolResponse);
@@ -113,7 +117,7 @@ service Daemon {
 }
 
 service VMSidecar {
-  rpc AddVMLinks (LinksBatchQuery) returns (BoolResponse);
-  rpc DelVMLinks (LinksBatchQuery) returns (BoolResponse);
-  rpc UpdateVMLinks (LinksBatchQuery) returns (BoolResponse);
+  rpc AddVMLinks (InternalLinksBatchQuery) returns (BoolResponse);
+  rpc DelVMLinks (InternalLinksBatchQuery) returns (BoolResponse);
+  rpc UpdateVMLinks (InternalLinksBatchQuery) returns (BoolResponse);
 }
