@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 // import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 package pb;
 
@@ -49,7 +50,7 @@ message LinkProperties {
   string reorder_prob = 10;
   string reorder_corr = 11;
   string corrupt_prob = 12;
-  string corrupt_corr = 13;
+   string corrupt_corr = 13;
 }
 
 message SetupPodQuery {
@@ -81,11 +82,21 @@ message InternalLink {
 }
 
 message LinksBatchQuery {
-  repeated Link links = 1;
+  google.protobuf.Timestamp version = 1;
+  map<int64,Link> links = 2;
+  bool full = 3;
+  int32 timeout = 4;
+  string namespace = 5;
+  string name = 6;
+}
+
+message LinksBatchResponse {
+  bool response = 1;
+  map<int64,Link> links = 2;
 }
 
 message InternalLinksBatchQuery {
-  repeated InternalLink links = 1;
+  map<int64,InternalLink> links = 1;
 }
 
 message MarkPodQuery {
@@ -99,6 +110,10 @@ message BoolResponse {
 
 service Controller {
   rpc ApplyLinks (LinksBatchQuery) returns (BoolResponse);
+  rpc ApplyLinksWithTimeout (LinksBatchQuery) returns (BoolResponse);
+  rpc ApplyLinksAsync (LinksBatchQuery) returns (BoolResponse);
+
+  rpc ListLinks (LinksBatchQuery) returns (LinksBatchResponse);
 
   rpc MarkPod (MarkPodQuery) returns (BoolResponse);
   rpc UnmarkPod (MarkPodQuery) returns (BoolResponse);

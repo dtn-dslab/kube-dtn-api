@@ -23,6 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ControllerClient interface {
 	ApplyLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
+	ApplyLinksWithTimeout(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
+	ApplyLinksAsync(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
+	ListLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*LinksBatchResponse, error)
 	MarkPod(ctx context.Context, in *MarkPodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	UnmarkPod(ctx context.Context, in *MarkPodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 }
@@ -38,6 +41,33 @@ func NewControllerClient(cc grpc.ClientConnInterface) ControllerClient {
 func (c *controllerClient) ApplyLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/pb.Controller/ApplyLinks", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *controllerClient) ApplyLinksWithTimeout(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
+	err := c.cc.Invoke(ctx, "/pb.Controller/ApplyLinksWithTimeout", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *controllerClient) ApplyLinksAsync(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
+	err := c.cc.Invoke(ctx, "/pb.Controller/ApplyLinksAsync", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *controllerClient) ListLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*LinksBatchResponse, error) {
+	out := new(LinksBatchResponse)
+	err := c.cc.Invoke(ctx, "/pb.Controller/ListLinks", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,6 +97,9 @@ func (c *controllerClient) UnmarkPod(ctx context.Context, in *MarkPodQuery, opts
 // for forward compatibility
 type ControllerServer interface {
 	ApplyLinks(context.Context, *LinksBatchQuery) (*BoolResponse, error)
+	ApplyLinksWithTimeout(context.Context, *LinksBatchQuery) (*BoolResponse, error)
+	ApplyLinksAsync(context.Context, *LinksBatchQuery) (*BoolResponse, error)
+	ListLinks(context.Context, *LinksBatchQuery) (*LinksBatchResponse, error)
 	MarkPod(context.Context, *MarkPodQuery) (*BoolResponse, error)
 	UnmarkPod(context.Context, *MarkPodQuery) (*BoolResponse, error)
 	mustEmbedUnimplementedControllerServer()
@@ -78,6 +111,15 @@ type UnimplementedControllerServer struct {
 
 func (UnimplementedControllerServer) ApplyLinks(context.Context, *LinksBatchQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApplyLinks not implemented")
+}
+func (UnimplementedControllerServer) ApplyLinksWithTimeout(context.Context, *LinksBatchQuery) (*BoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApplyLinksWithTimeout not implemented")
+}
+func (UnimplementedControllerServer) ApplyLinksAsync(context.Context, *LinksBatchQuery) (*BoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApplyLinksAsync not implemented")
+}
+func (UnimplementedControllerServer) ListLinks(context.Context, *LinksBatchQuery) (*LinksBatchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListLinks not implemented")
 }
 func (UnimplementedControllerServer) MarkPod(context.Context, *MarkPodQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MarkPod not implemented")
@@ -112,6 +154,60 @@ func _Controller_ApplyLinks_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ControllerServer).ApplyLinks(ctx, req.(*LinksBatchQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Controller_ApplyLinksWithTimeout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LinksBatchQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ControllerServer).ApplyLinksWithTimeout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Controller/ApplyLinksWithTimeout",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ControllerServer).ApplyLinksWithTimeout(ctx, req.(*LinksBatchQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Controller_ApplyLinksAsync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LinksBatchQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ControllerServer).ApplyLinksAsync(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Controller/ApplyLinksAsync",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ControllerServer).ApplyLinksAsync(ctx, req.(*LinksBatchQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Controller_ListLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LinksBatchQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ControllerServer).ListLinks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Controller/ListLinks",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ControllerServer).ListLinks(ctx, req.(*LinksBatchQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -162,6 +258,18 @@ var Controller_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ApplyLinks",
 			Handler:    _Controller_ApplyLinks_Handler,
+		},
+		{
+			MethodName: "ApplyLinksWithTimeout",
+			Handler:    _Controller_ApplyLinksWithTimeout_Handler,
+		},
+		{
+			MethodName: "ApplyLinksAsync",
+			Handler:    _Controller_ApplyLinksAsync_Handler,
+		},
+		{
+			MethodName: "ListLinks",
+			Handler:    _Controller_ListLinks_Handler,
 		},
 		{
 			MethodName: "MarkPod",
