@@ -50,7 +50,7 @@ message LinkProperties {
   string reorder_prob = 10;
   string reorder_corr = 11;
   string corrupt_prob = 12;
-   string corrupt_corr = 13;
+  string corrupt_corr = 13;
 }
 
 message SetupPodQuery {
@@ -83,7 +83,7 @@ message InternalLink {
 
 message LinksBatchQuery {
   google.protobuf.Timestamp version = 1;
-  map<int64,Link> links = 2;
+  repeated Link links = 2;
   bool full = 3;
   int32 timeout = 4;
   string namespace = 5;
@@ -92,11 +92,11 @@ message LinksBatchQuery {
 
 message LinksBatchResponse {
   bool response = 1;
-  map<int64,Link> links = 2;
+  repeated Link links = 2;
 }
 
 message InternalLinksBatchQuery {
-  map<int64,InternalLink> links = 1;
+  repeated InternalLink links = 1;
 }
 
 message MarkPodQuery {
