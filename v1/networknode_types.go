@@ -30,24 +30,18 @@ type NetworkNodeSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Name equates to the name of the network Pod
-	Name string `json:"name"`
-
-	// Namespace equates to the namespace of the network Pod
-	Namespace string `json:"namespace"`
-
 	// NetworkIntfs is a list of network interfaces
 	// +optional
 	NetworkIntfs []common.NetworkIntf `json:"network_intfs,omitempty"`
 }
 
-func (n *NetworkNodeSpec) ToProto() *pb.NetworkNode {
+func (n *NetworkNode) ToProto() *pb.NetworkNode {
 	return &pb.NetworkNode{
 		Name:      n.Name,
 		Namespace: n.Namespace,
 		NetworkIntfs: func() []*pb.NetworkIntf {
 			var networkIntfs []*pb.NetworkIntf
-			for _, networkIntf := range n.NetworkIntfs {
+			for _, networkIntf := range n.Spec.NetworkIntfs {
 				networkIntfs = append(networkIntfs, networkIntf.ToProto())
 			}
 			return networkIntfs

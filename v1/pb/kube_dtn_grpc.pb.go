@@ -26,8 +26,6 @@ type ControllerClient interface {
 	ApplyLinksWithTimeout(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	ApplyLinksAsync(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	ListLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*LinksBatchResponse, error)
-	MarkPod(ctx context.Context, in *MarkPodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
-	UnmarkPod(ctx context.Context, in *MarkPodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 }
 
 type controllerClient struct {
@@ -74,24 +72,6 @@ func (c *controllerClient) ListLinks(ctx context.Context, in *LinksBatchQuery, o
 	return out, nil
 }
 
-func (c *controllerClient) MarkPod(ctx context.Context, in *MarkPodQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
-	out := new(BoolResponse)
-	err := c.cc.Invoke(ctx, "/pb.Controller/MarkPod", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *controllerClient) UnmarkPod(ctx context.Context, in *MarkPodQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
-	out := new(BoolResponse)
-	err := c.cc.Invoke(ctx, "/pb.Controller/UnmarkPod", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ControllerServer is the server API for Controller service.
 // All implementations must embed UnimplementedControllerServer
 // for forward compatibility
@@ -100,8 +80,6 @@ type ControllerServer interface {
 	ApplyLinksWithTimeout(context.Context, *LinksBatchQuery) (*BoolResponse, error)
 	ApplyLinksAsync(context.Context, *LinksBatchQuery) (*BoolResponse, error)
 	ListLinks(context.Context, *LinksBatchQuery) (*LinksBatchResponse, error)
-	MarkPod(context.Context, *MarkPodQuery) (*BoolResponse, error)
-	UnmarkPod(context.Context, *MarkPodQuery) (*BoolResponse, error)
 	mustEmbedUnimplementedControllerServer()
 }
 
@@ -120,12 +98,6 @@ func (UnimplementedControllerServer) ApplyLinksAsync(context.Context, *LinksBatc
 }
 func (UnimplementedControllerServer) ListLinks(context.Context, *LinksBatchQuery) (*LinksBatchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListLinks not implemented")
-}
-func (UnimplementedControllerServer) MarkPod(context.Context, *MarkPodQuery) (*BoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MarkPod not implemented")
-}
-func (UnimplementedControllerServer) UnmarkPod(context.Context, *MarkPodQuery) (*BoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnmarkPod not implemented")
 }
 func (UnimplementedControllerServer) mustEmbedUnimplementedControllerServer() {}
 
@@ -212,42 +184,6 @@ func _Controller_ListLinks_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Controller_MarkPod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MarkPodQuery)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ControllerServer).MarkPod(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Controller/MarkPod",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControllerServer).MarkPod(ctx, req.(*MarkPodQuery))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Controller_UnmarkPod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MarkPodQuery)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ControllerServer).UnmarkPod(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Controller/UnmarkPod",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControllerServer).UnmarkPod(ctx, req.(*MarkPodQuery))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Controller_ServiceDesc is the grpc.ServiceDesc for Controller service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -270,14 +206,6 @@ var Controller_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListLinks",
 			Handler:    _Controller_ListLinks_Handler,
-		},
-		{
-			MethodName: "MarkPod",
-			Handler:    _Controller_MarkPod_Handler,
-		},
-		{
-			MethodName: "UnmarkPod",
-			Handler:    _Controller_UnmarkPod_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

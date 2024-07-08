@@ -67,18 +67,19 @@ message PodQuery {
 message InternalLink {
   int64 uid = 1;
 
-  string net_ns = 2;
-  string remote = 3;
+  string kube_ns = 2;
+  string net_ns = 3;
+  string remote = 4;
 
-  string local_name = 4;
-  string local_intf = 5;
-  string local_mac = 6;
+  string local_name = 5;
+  string local_intf = 6;
+  string local_mac = 7;
 
-  string peer_name = 7;
-  string peer_intf = 8;
-  string peer_mac = 9;
+  string peer_name = 8;
+  string peer_intf = 9;
+  string peer_mac = 10;
 
-  LinkProperties properties = 10;
+  LinkProperties properties = 11;
 }
 
 message LinksBatchQuery {
@@ -114,9 +115,6 @@ service Controller {
   rpc ApplyLinksAsync (LinksBatchQuery) returns (BoolResponse);
 
   rpc ListLinks (LinksBatchQuery) returns (LinksBatchResponse);
-
-  rpc MarkPod (MarkPodQuery) returns (BoolResponse);
-  rpc UnmarkPod (MarkPodQuery) returns (BoolResponse);
 }
 
 service Daemon {
