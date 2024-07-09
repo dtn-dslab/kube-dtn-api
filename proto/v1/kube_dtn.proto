@@ -111,11 +111,6 @@ message InternalLinksBatchQuery {
   repeated InternalLink links = 1;
 }
 
-message MarkPodQuery {
-  string name = 1;
-  string namespace = 2;
-}
-
 message BoolResponse {
   bool response = 1;
 }
@@ -126,6 +121,10 @@ service Controller {
   rpc ApplyLinksAsync (LinksBatchQuery) returns (BoolResponse);
 
   rpc ListLinks (LinksBatchQuery) returns (LinksBatchResponse);
+
+  // For internal use
+
+  rpc RemoveNode (NetworkNode) returns (BoolResponse);
 }
 
 service Daemon {

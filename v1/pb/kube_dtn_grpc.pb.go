@@ -26,6 +26,7 @@ type ControllerClient interface {
 	ApplyLinksWithTimeout(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	ApplyLinksAsync(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	ListLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*LinksBatchResponse, error)
+	RemoveNode(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error)
 }
 
 type controllerClient struct {
@@ -72,6 +73,15 @@ func (c *controllerClient) ListLinks(ctx context.Context, in *LinksBatchQuery, o
 	return out, nil
 }
 
+func (c *controllerClient) RemoveNode(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
+	err := c.cc.Invoke(ctx, "/pb.Controller/RemoveNode", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ControllerServer is the server API for Controller service.
 // All implementations must embed UnimplementedControllerServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type ControllerServer interface {
 	ApplyLinksWithTimeout(context.Context, *LinksBatchQuery) (*BoolResponse, error)
 	ApplyLinksAsync(context.Context, *LinksBatchQuery) (*BoolResponse, error)
 	ListLinks(context.Context, *LinksBatchQuery) (*LinksBatchResponse, error)
+	RemoveNode(context.Context, *NetworkNode) (*BoolResponse, error)
 	mustEmbedUnimplementedControllerServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedControllerServer) ApplyLinksAsync(context.Context, *LinksBatc
 }
 func (UnimplementedControllerServer) ListLinks(context.Context, *LinksBatchQuery) (*LinksBatchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListLinks not implemented")
+}
+func (UnimplementedControllerServer) RemoveNode(context.Context, *NetworkNode) (*BoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveNode not implemented")
 }
 func (UnimplementedControllerServer) mustEmbedUnimplementedControllerServer() {}
 
@@ -184,6 +198,24 @@ func _Controller_ListLinks_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Controller_RemoveNode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NetworkNode)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ControllerServer).RemoveNode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Controller/RemoveNode",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ControllerServer).RemoveNode(ctx, req.(*NetworkNode))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Controller_ServiceDesc is the grpc.ServiceDesc for Controller service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +238,10 @@ var Controller_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListLinks",
 			Handler:    _Controller_ListLinks_Handler,
+		},
+		{
+			MethodName: "RemoveNode",
+			Handler:    _Controller_RemoveNode_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
