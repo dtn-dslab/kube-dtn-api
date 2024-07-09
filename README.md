@@ -29,6 +29,20 @@ You have 2 options to use this repository:
 
 You can use this repository as a Go package.
 
+Modify the git config:
+
+```bash
+# ~/.gitconfig
+[url "ssh://git@github.com/"]
+    insteadOf = https://github.com/
+```
+
+Set the go env:
+
+```bash
+go env -w GONOSUMDB="github.com"
+``` 
+
 Add the following line to your go.mod file:
 
 ```go
