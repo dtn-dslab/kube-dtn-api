@@ -69,15 +69,10 @@ message LinkProperties {
   string corrupt_corr = 13;
 }
 
-message SetupPodQuery {
-  string name = 1;
-  string kube_ns = 2;
-  string net_ns = 3;
-}
-
 message PodQuery {
   string name = 1;
   string kube_ns = 2;
+  string net_ns = 3;
 }
 
 message InternalLink {
@@ -141,7 +136,7 @@ service Daemon {
   rpc ConfigurePod (NetworkNode) returns (BoolResponse);
   rpc UnconfigurePod (NetworkNode) returns (BoolResponse);
 
-  rpc SetupPod (SetupPodQuery) returns (BoolResponse);
+  rpc SetupPod (PodQuery) returns (BoolResponse);
   rpc DestroyPod (PodQuery) returns (BoolResponse);
 }
 

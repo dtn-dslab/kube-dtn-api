@@ -221,7 +221,7 @@ type DaemonClient interface {
 	UpdateLinks(ctx context.Context, in *InternalLinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	ConfigurePod(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error)
 	UnconfigurePod(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error)
-	SetupPod(ctx context.Context, in *SetupPodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
+	SetupPod(ctx context.Context, in *PodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	DestroyPod(ctx context.Context, in *PodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 }
 
@@ -278,7 +278,7 @@ func (c *daemonClient) UnconfigurePod(ctx context.Context, in *NetworkNode, opts
 	return out, nil
 }
 
-func (c *daemonClient) SetupPod(ctx context.Context, in *SetupPodQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
+func (c *daemonClient) SetupPod(ctx context.Context, in *PodQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/pb.Daemon/SetupPod", in, out, opts...)
 	if err != nil {
@@ -305,7 +305,7 @@ type DaemonServer interface {
 	UpdateLinks(context.Context, *InternalLinksBatchQuery) (*BoolResponse, error)
 	ConfigurePod(context.Context, *NetworkNode) (*BoolResponse, error)
 	UnconfigurePod(context.Context, *NetworkNode) (*BoolResponse, error)
-	SetupPod(context.Context, *SetupPodQuery) (*BoolResponse, error)
+	SetupPod(context.Context, *PodQuery) (*BoolResponse, error)
 	DestroyPod(context.Context, *PodQuery) (*BoolResponse, error)
 	mustEmbedUnimplementedDaemonServer()
 }
@@ -329,7 +329,7 @@ func (UnimplementedDaemonServer) ConfigurePod(context.Context, *NetworkNode) (*B
 func (UnimplementedDaemonServer) UnconfigurePod(context.Context, *NetworkNode) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnconfigurePod not implemented")
 }
-func (UnimplementedDaemonServer) SetupPod(context.Context, *SetupPodQuery) (*BoolResponse, error) {
+func (UnimplementedDaemonServer) SetupPod(context.Context, *PodQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetupPod not implemented")
 }
 func (UnimplementedDaemonServer) DestroyPod(context.Context, *PodQuery) (*BoolResponse, error) {
@@ -439,7 +439,7 @@ func _Daemon_UnconfigurePod_Handler(srv interface{}, ctx context.Context, dec fu
 }
 
 func _Daemon_SetupPod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetupPodQuery)
+	in := new(PodQuery)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -451,7 +451,7 @@ func _Daemon_SetupPod_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: "/pb.Daemon/SetupPod",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DaemonServer).SetupPod(ctx, req.(*SetupPodQuery))
+		return srv.(DaemonServer).SetupPod(ctx, req.(*PodQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }
