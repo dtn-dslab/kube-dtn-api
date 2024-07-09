@@ -38,18 +38,34 @@ message Link {
 }
 
 message LinkProperties {
+  // Latency in duration string format, e.g. "300ms", "1.5s".
+  // Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
   string latency = 1;
+  // Latency correlation in float percentage, e.g. "55.0".
   string latency_corr = 2;
+  // Jitter in duration string format, e.g. "300ms", "1.5s".
+	// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
   string jitter = 3;
+  // Loss rate in float percentage, e.g. "55.0".
   string loss = 4;
+  // Loss correlation in float percentage, e.g. "55.0".
   string loss_corr = 5;
+  // Bandwidth rate limit, e.g. 1000(bit/s), 100kbit, 100Mbps, 1Gibps.
+	// For more information, refer to https://man7.org/linux/man-pages/man8/tc.8.html.
   string rate = 6;
+  // Gap every N packets
   uint32 gap = 7;
+  // Duplicate rate in float percentage, e.g. "55.0".
   string duplicate = 8;
+  // Duplicate correlation in float percentage, e.g. "55.0".
   string duplicate_corr = 9;
+  // Reorder probability in float percentage, e.g. "55.0".
   string reorder_prob = 10;
+  // Reorder correlation in float percentage, e.g. "55.0".
   string reorder_corr = 11;
+  // Corrupt probability in float percentage, e.g. "55.0".
   string corrupt_prob = 12;
+  // Corrupt correlation in float percentage, e.g. "55.0".
   string corrupt_corr = 13;
 }
 

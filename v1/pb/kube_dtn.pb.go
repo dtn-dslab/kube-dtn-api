@@ -326,19 +326,35 @@ type LinkProperties struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Latency       string `protobuf:"bytes,1,opt,name=latency,proto3" json:"latency,omitempty"`
-	LatencyCorr   string `protobuf:"bytes,2,opt,name=latency_corr,json=latencyCorr,proto3" json:"latency_corr,omitempty"`
-	Jitter        string `protobuf:"bytes,3,opt,name=jitter,proto3" json:"jitter,omitempty"`
-	Loss          string `protobuf:"bytes,4,opt,name=loss,proto3" json:"loss,omitempty"`
-	LossCorr      string `protobuf:"bytes,5,opt,name=loss_corr,json=lossCorr,proto3" json:"loss_corr,omitempty"`
-	Rate          string `protobuf:"bytes,6,opt,name=rate,proto3" json:"rate,omitempty"`
-	Gap           uint32 `protobuf:"varint,7,opt,name=gap,proto3" json:"gap,omitempty"`
-	Duplicate     string `protobuf:"bytes,8,opt,name=duplicate,proto3" json:"duplicate,omitempty"`
+	// Latency in duration string format, e.g. "300ms", "1.5s".
+	// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+	Latency string `protobuf:"bytes,1,opt,name=latency,proto3" json:"latency,omitempty"`
+	// Latency correlation in float percentage, e.g. "55.0".
+	LatencyCorr string `protobuf:"bytes,2,opt,name=latency_corr,json=latencyCorr,proto3" json:"latency_corr,omitempty"`
+	// Jitter in duration string format, e.g. "300ms", "1.5s".
+	// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+	Jitter string `protobuf:"bytes,3,opt,name=jitter,proto3" json:"jitter,omitempty"`
+	// Loss rate in float percentage, e.g. "55.0".
+	Loss string `protobuf:"bytes,4,opt,name=loss,proto3" json:"loss,omitempty"`
+	// Loss correlation in float percentage, e.g. "55.0".
+	LossCorr string `protobuf:"bytes,5,opt,name=loss_corr,json=lossCorr,proto3" json:"loss_corr,omitempty"`
+	// Bandwidth rate limit, e.g. 1000(bit/s), 100kbit, 100Mbps, 1Gibps.
+	// For more information, refer to https://man7.org/linux/man-pages/man8/tc.8.html.
+	Rate string `protobuf:"bytes,6,opt,name=rate,proto3" json:"rate,omitempty"`
+	// Gap every N packets
+	Gap uint32 `protobuf:"varint,7,opt,name=gap,proto3" json:"gap,omitempty"`
+	// Duplicate rate in float percentage, e.g. "55.0".
+	Duplicate string `protobuf:"bytes,8,opt,name=duplicate,proto3" json:"duplicate,omitempty"`
+	// Duplicate correlation in float percentage, e.g. "55.0".
 	DuplicateCorr string `protobuf:"bytes,9,opt,name=duplicate_corr,json=duplicateCorr,proto3" json:"duplicate_corr,omitempty"`
-	ReorderProb   string `protobuf:"bytes,10,opt,name=reorder_prob,json=reorderProb,proto3" json:"reorder_prob,omitempty"`
-	ReorderCorr   string `protobuf:"bytes,11,opt,name=reorder_corr,json=reorderCorr,proto3" json:"reorder_corr,omitempty"`
-	CorruptProb   string `protobuf:"bytes,12,opt,name=corrupt_prob,json=corruptProb,proto3" json:"corrupt_prob,omitempty"`
-	CorruptCorr   string `protobuf:"bytes,13,opt,name=corrupt_corr,json=corruptCorr,proto3" json:"corrupt_corr,omitempty"`
+	// Reorder probability in float percentage, e.g. "55.0".
+	ReorderProb string `protobuf:"bytes,10,opt,name=reorder_prob,json=reorderProb,proto3" json:"reorder_prob,omitempty"`
+	// Reorder correlation in float percentage, e.g. "55.0".
+	ReorderCorr string `protobuf:"bytes,11,opt,name=reorder_corr,json=reorderCorr,proto3" json:"reorder_corr,omitempty"`
+	// Corrupt probability in float percentage, e.g. "55.0".
+	CorruptProb string `protobuf:"bytes,12,opt,name=corrupt_prob,json=corruptProb,proto3" json:"corrupt_prob,omitempty"`
+	// Corrupt correlation in float percentage, e.g. "55.0".
+	CorruptCorr string `protobuf:"bytes,13,opt,name=corrupt_corr,json=corruptCorr,proto3" json:"corrupt_corr,omitempty"`
 }
 
 func (x *LinkProperties) Reset() {
