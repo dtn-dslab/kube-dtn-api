@@ -554,9 +554,9 @@ var Daemon_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type VMSidecarClient interface {
-	AddVMLinks(ctx context.Context, in *InternalLinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
-	DelVMLinks(ctx context.Context, in *InternalLinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
-	UpdateVMLinks(ctx context.Context, in *InternalLinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
+	AddVMLinks(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error)
+	DelVMLinks(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error)
+	UpdateVMLinks(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error)
 }
 
 type vMSidecarClient struct {
@@ -567,7 +567,7 @@ func NewVMSidecarClient(cc grpc.ClientConnInterface) VMSidecarClient {
 	return &vMSidecarClient{cc}
 }
 
-func (c *vMSidecarClient) AddVMLinks(ctx context.Context, in *InternalLinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
+func (c *vMSidecarClient) AddVMLinks(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/pb.VMSidecar/AddVMLinks", in, out, opts...)
 	if err != nil {
@@ -576,7 +576,7 @@ func (c *vMSidecarClient) AddVMLinks(ctx context.Context, in *InternalLinksBatch
 	return out, nil
 }
 
-func (c *vMSidecarClient) DelVMLinks(ctx context.Context, in *InternalLinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
+func (c *vMSidecarClient) DelVMLinks(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/pb.VMSidecar/DelVMLinks", in, out, opts...)
 	if err != nil {
@@ -585,7 +585,7 @@ func (c *vMSidecarClient) DelVMLinks(ctx context.Context, in *InternalLinksBatch
 	return out, nil
 }
 
-func (c *vMSidecarClient) UpdateVMLinks(ctx context.Context, in *InternalLinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
+func (c *vMSidecarClient) UpdateVMLinks(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/pb.VMSidecar/UpdateVMLinks", in, out, opts...)
 	if err != nil {
@@ -598,9 +598,9 @@ func (c *vMSidecarClient) UpdateVMLinks(ctx context.Context, in *InternalLinksBa
 // All implementations must embed UnimplementedVMSidecarServer
 // for forward compatibility
 type VMSidecarServer interface {
-	AddVMLinks(context.Context, *InternalLinksBatchQuery) (*BoolResponse, error)
-	DelVMLinks(context.Context, *InternalLinksBatchQuery) (*BoolResponse, error)
-	UpdateVMLinks(context.Context, *InternalLinksBatchQuery) (*BoolResponse, error)
+	AddVMLinks(context.Context, *NetworkNode) (*BoolResponse, error)
+	DelVMLinks(context.Context, *NetworkNode) (*BoolResponse, error)
+	UpdateVMLinks(context.Context, *NetworkNode) (*BoolResponse, error)
 	mustEmbedUnimplementedVMSidecarServer()
 }
 
@@ -608,13 +608,13 @@ type VMSidecarServer interface {
 type UnimplementedVMSidecarServer struct {
 }
 
-func (UnimplementedVMSidecarServer) AddVMLinks(context.Context, *InternalLinksBatchQuery) (*BoolResponse, error) {
+func (UnimplementedVMSidecarServer) AddVMLinks(context.Context, *NetworkNode) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddVMLinks not implemented")
 }
-func (UnimplementedVMSidecarServer) DelVMLinks(context.Context, *InternalLinksBatchQuery) (*BoolResponse, error) {
+func (UnimplementedVMSidecarServer) DelVMLinks(context.Context, *NetworkNode) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DelVMLinks not implemented")
 }
-func (UnimplementedVMSidecarServer) UpdateVMLinks(context.Context, *InternalLinksBatchQuery) (*BoolResponse, error) {
+func (UnimplementedVMSidecarServer) UpdateVMLinks(context.Context, *NetworkNode) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateVMLinks not implemented")
 }
 func (UnimplementedVMSidecarServer) mustEmbedUnimplementedVMSidecarServer() {}
@@ -631,7 +631,7 @@ func RegisterVMSidecarServer(s grpc.ServiceRegistrar, srv VMSidecarServer) {
 }
 
 func _VMSidecar_AddVMLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(InternalLinksBatchQuery)
+	in := new(NetworkNode)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -643,13 +643,13 @@ func _VMSidecar_AddVMLinks_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/pb.VMSidecar/AddVMLinks",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VMSidecarServer).AddVMLinks(ctx, req.(*InternalLinksBatchQuery))
+		return srv.(VMSidecarServer).AddVMLinks(ctx, req.(*NetworkNode))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _VMSidecar_DelVMLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(InternalLinksBatchQuery)
+	in := new(NetworkNode)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -661,13 +661,13 @@ func _VMSidecar_DelVMLinks_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/pb.VMSidecar/DelVMLinks",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VMSidecarServer).DelVMLinks(ctx, req.(*InternalLinksBatchQuery))
+		return srv.(VMSidecarServer).DelVMLinks(ctx, req.(*NetworkNode))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _VMSidecar_UpdateVMLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(InternalLinksBatchQuery)
+	in := new(NetworkNode)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -679,7 +679,7 @@ func _VMSidecar_UpdateVMLinks_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/pb.VMSidecar/UpdateVMLinks",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VMSidecarServer).UpdateVMLinks(ctx, req.(*InternalLinksBatchQuery))
+		return srv.(VMSidecarServer).UpdateVMLinks(ctx, req.(*NetworkNode))
 	}
 	return interceptor(ctx, in, info, handler)
 }
