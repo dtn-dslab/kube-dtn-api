@@ -21,9 +21,31 @@ It also includes the following components which is convenient for developing:
 
 ## Usage
 
+You have 2 options to use this repository:
+- Git submodule
+- Go Package
+
+### Go Package
+
+You can use this repository as a Go package.
+
+Add the following line to your go.mod file:
+
+```go
+replace (
+    dslab.sjtu/kube-dtn/api => github.com/dtn-dslab/kube-dtn-api v0.0.0
+)
+```
+
+Attention: You should replace `v0.0.0` with the latest version of this repository.
+
+Then you can use the API in your project.
+
+### Git submodule
+
 You should use git submodule to include this repository in your project. 
 
-### Initialize the submodule
+#### Initialize the submodule
 
 Change directory to the root of your project and run the following command:
 
@@ -33,11 +55,11 @@ git submodule init
 git submodule update
 ```
 
-### Update the submodule
+#### Update the submodule
 
 Change directory to the submodule(`external_api`) and use git like you would normally.
 
-### Clone the project with submodule
+#### Clone the project with submodule
 
 If you are cloning a project with a submodule, you need to run the following command to initialize the submodule:
 
@@ -52,7 +74,7 @@ git submodule init
 git submodule update
 ```
 
-### Generate gRPC code
+#### Generate gRPC code
 
 You can include `api.mk` provided in this repository in your Makefile to generate gRPC code automatically. 
 
@@ -72,7 +94,7 @@ Then you can run the following command to generate gRPC code:
 make proto
 ```
 
-### Modify your go.mod file
+#### Modify your go.mod file
 
 You should add the following lines to your go.mod file:
 
