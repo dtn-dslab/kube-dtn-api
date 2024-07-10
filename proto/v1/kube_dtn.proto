@@ -140,7 +140,6 @@ service Daemon {
 }
 
 service VMSidecar {
-  rpc AddVMLinks (NetworkNode) returns (BoolResponse);
-  rpc DelVMLinks (NetworkNode) returns (BoolResponse);
-  rpc UpdateVMLinks (NetworkNode) returns (BoolResponse);
+  rpc ConfigureVM (NetworkNode) returns (BoolResponse);
+  rpc UnconfigureVM (NetworkNode) returns (BoolResponse);
 }
