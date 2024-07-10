@@ -138,8 +138,3 @@ service Daemon {
   rpc SetupPod (PodQuery) returns (BoolResponse);
   rpc DestroyPod (PodQuery) returns (BoolResponse);
 }
-
-service VMSidecar {
-  rpc ConfigureVM (NetworkNode) returns (BoolResponse);
-  rpc UnconfigureVM (NetworkNode) returns (BoolResponse);
-}
