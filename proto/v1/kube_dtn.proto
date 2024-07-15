@@ -115,15 +115,16 @@ message BoolResponse {
   bool response = 1;
 }
 
-service Controller {
+service ControllerExternal {
   rpc ApplyLinks (LinksBatchQuery) returns (BoolResponse);
   rpc ApplyLinksWithTimeout (LinksBatchQuery) returns (BoolResponse);
   rpc ApplyLinksAsync (LinksBatchQuery) returns (BoolResponse);
 
   rpc ListLinks (LinksBatchQuery) returns (LinksBatchResponse);
+}
 
-  // For internal use
-
+// For internal use
+service ControllerInternal {
   rpc RemoveNode (NetworkNode) returns (BoolResponse);
 }
 

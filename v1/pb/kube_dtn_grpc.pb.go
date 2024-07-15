@@ -18,230 +18,280 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ControllerClient is the client API for Controller service.
+// ControllerExternalClient is the client API for ControllerExternal service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ControllerClient interface {
+type ControllerExternalClient interface {
 	ApplyLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	ApplyLinksWithTimeout(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	ApplyLinksAsync(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	ListLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*LinksBatchResponse, error)
-	RemoveNode(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error)
 }
 
-type controllerClient struct {
+type controllerExternalClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewControllerClient(cc grpc.ClientConnInterface) ControllerClient {
-	return &controllerClient{cc}
+func NewControllerExternalClient(cc grpc.ClientConnInterface) ControllerExternalClient {
+	return &controllerExternalClient{cc}
 }
 
-func (c *controllerClient) ApplyLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
+func (c *controllerExternalClient) ApplyLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
-	err := c.cc.Invoke(ctx, "/pb.Controller/ApplyLinks", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.ControllerExternal/ApplyLinks", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *controllerClient) ApplyLinksWithTimeout(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
+func (c *controllerExternalClient) ApplyLinksWithTimeout(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
-	err := c.cc.Invoke(ctx, "/pb.Controller/ApplyLinksWithTimeout", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.ControllerExternal/ApplyLinksWithTimeout", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *controllerClient) ApplyLinksAsync(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
+func (c *controllerExternalClient) ApplyLinksAsync(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
-	err := c.cc.Invoke(ctx, "/pb.Controller/ApplyLinksAsync", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.ControllerExternal/ApplyLinksAsync", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *controllerClient) ListLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*LinksBatchResponse, error) {
+func (c *controllerExternalClient) ListLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*LinksBatchResponse, error) {
 	out := new(LinksBatchResponse)
-	err := c.cc.Invoke(ctx, "/pb.Controller/ListLinks", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.ControllerExternal/ListLinks", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *controllerClient) RemoveNode(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error) {
-	out := new(BoolResponse)
-	err := c.cc.Invoke(ctx, "/pb.Controller/RemoveNode", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// ControllerServer is the server API for Controller service.
-// All implementations must embed UnimplementedControllerServer
+// ControllerExternalServer is the server API for ControllerExternal service.
+// All implementations must embed UnimplementedControllerExternalServer
 // for forward compatibility
-type ControllerServer interface {
+type ControllerExternalServer interface {
 	ApplyLinks(context.Context, *LinksBatchQuery) (*BoolResponse, error)
 	ApplyLinksWithTimeout(context.Context, *LinksBatchQuery) (*BoolResponse, error)
 	ApplyLinksAsync(context.Context, *LinksBatchQuery) (*BoolResponse, error)
 	ListLinks(context.Context, *LinksBatchQuery) (*LinksBatchResponse, error)
-	RemoveNode(context.Context, *NetworkNode) (*BoolResponse, error)
-	mustEmbedUnimplementedControllerServer()
+	mustEmbedUnimplementedControllerExternalServer()
 }
 
-// UnimplementedControllerServer must be embedded to have forward compatible implementations.
-type UnimplementedControllerServer struct {
+// UnimplementedControllerExternalServer must be embedded to have forward compatible implementations.
+type UnimplementedControllerExternalServer struct {
 }
 
-func (UnimplementedControllerServer) ApplyLinks(context.Context, *LinksBatchQuery) (*BoolResponse, error) {
+func (UnimplementedControllerExternalServer) ApplyLinks(context.Context, *LinksBatchQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApplyLinks not implemented")
 }
-func (UnimplementedControllerServer) ApplyLinksWithTimeout(context.Context, *LinksBatchQuery) (*BoolResponse, error) {
+func (UnimplementedControllerExternalServer) ApplyLinksWithTimeout(context.Context, *LinksBatchQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApplyLinksWithTimeout not implemented")
 }
-func (UnimplementedControllerServer) ApplyLinksAsync(context.Context, *LinksBatchQuery) (*BoolResponse, error) {
+func (UnimplementedControllerExternalServer) ApplyLinksAsync(context.Context, *LinksBatchQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApplyLinksAsync not implemented")
 }
-func (UnimplementedControllerServer) ListLinks(context.Context, *LinksBatchQuery) (*LinksBatchResponse, error) {
+func (UnimplementedControllerExternalServer) ListLinks(context.Context, *LinksBatchQuery) (*LinksBatchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListLinks not implemented")
 }
-func (UnimplementedControllerServer) RemoveNode(context.Context, *NetworkNode) (*BoolResponse, error) {
+func (UnimplementedControllerExternalServer) mustEmbedUnimplementedControllerExternalServer() {}
+
+// UnsafeControllerExternalServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ControllerExternalServer will
+// result in compilation errors.
+type UnsafeControllerExternalServer interface {
+	mustEmbedUnimplementedControllerExternalServer()
+}
+
+func RegisterControllerExternalServer(s grpc.ServiceRegistrar, srv ControllerExternalServer) {
+	s.RegisterService(&ControllerExternal_ServiceDesc, srv)
+}
+
+func _ControllerExternal_ApplyLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LinksBatchQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ControllerExternalServer).ApplyLinks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.ControllerExternal/ApplyLinks",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ControllerExternalServer).ApplyLinks(ctx, req.(*LinksBatchQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ControllerExternal_ApplyLinksWithTimeout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LinksBatchQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ControllerExternalServer).ApplyLinksWithTimeout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.ControllerExternal/ApplyLinksWithTimeout",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ControllerExternalServer).ApplyLinksWithTimeout(ctx, req.(*LinksBatchQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ControllerExternal_ApplyLinksAsync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LinksBatchQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ControllerExternalServer).ApplyLinksAsync(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.ControllerExternal/ApplyLinksAsync",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ControllerExternalServer).ApplyLinksAsync(ctx, req.(*LinksBatchQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ControllerExternal_ListLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LinksBatchQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ControllerExternalServer).ListLinks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.ControllerExternal/ListLinks",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ControllerExternalServer).ListLinks(ctx, req.(*LinksBatchQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ControllerExternal_ServiceDesc is the grpc.ServiceDesc for ControllerExternal service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ControllerExternal_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.ControllerExternal",
+	HandlerType: (*ControllerExternalServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ApplyLinks",
+			Handler:    _ControllerExternal_ApplyLinks_Handler,
+		},
+		{
+			MethodName: "ApplyLinksWithTimeout",
+			Handler:    _ControllerExternal_ApplyLinksWithTimeout_Handler,
+		},
+		{
+			MethodName: "ApplyLinksAsync",
+			Handler:    _ControllerExternal_ApplyLinksAsync_Handler,
+		},
+		{
+			MethodName: "ListLinks",
+			Handler:    _ControllerExternal_ListLinks_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "api/proto/v1/kube_dtn.proto",
+}
+
+// ControllerInternalClient is the client API for ControllerInternal service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ControllerInternalClient interface {
+	RemoveNode(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error)
+}
+
+type controllerInternalClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewControllerInternalClient(cc grpc.ClientConnInterface) ControllerInternalClient {
+	return &controllerInternalClient{cc}
+}
+
+func (c *controllerInternalClient) RemoveNode(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
+	err := c.cc.Invoke(ctx, "/pb.ControllerInternal/RemoveNode", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ControllerInternalServer is the server API for ControllerInternal service.
+// All implementations must embed UnimplementedControllerInternalServer
+// for forward compatibility
+type ControllerInternalServer interface {
+	RemoveNode(context.Context, *NetworkNode) (*BoolResponse, error)
+	mustEmbedUnimplementedControllerInternalServer()
+}
+
+// UnimplementedControllerInternalServer must be embedded to have forward compatible implementations.
+type UnimplementedControllerInternalServer struct {
+}
+
+func (UnimplementedControllerInternalServer) RemoveNode(context.Context, *NetworkNode) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveNode not implemented")
 }
-func (UnimplementedControllerServer) mustEmbedUnimplementedControllerServer() {}
+func (UnimplementedControllerInternalServer) mustEmbedUnimplementedControllerInternalServer() {}
 
-// UnsafeControllerServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ControllerServer will
+// UnsafeControllerInternalServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ControllerInternalServer will
 // result in compilation errors.
-type UnsafeControllerServer interface {
-	mustEmbedUnimplementedControllerServer()
+type UnsafeControllerInternalServer interface {
+	mustEmbedUnimplementedControllerInternalServer()
 }
 
-func RegisterControllerServer(s grpc.ServiceRegistrar, srv ControllerServer) {
-	s.RegisterService(&Controller_ServiceDesc, srv)
+func RegisterControllerInternalServer(s grpc.ServiceRegistrar, srv ControllerInternalServer) {
+	s.RegisterService(&ControllerInternal_ServiceDesc, srv)
 }
 
-func _Controller_ApplyLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LinksBatchQuery)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ControllerServer).ApplyLinks(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Controller/ApplyLinks",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControllerServer).ApplyLinks(ctx, req.(*LinksBatchQuery))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Controller_ApplyLinksWithTimeout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LinksBatchQuery)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ControllerServer).ApplyLinksWithTimeout(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Controller/ApplyLinksWithTimeout",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControllerServer).ApplyLinksWithTimeout(ctx, req.(*LinksBatchQuery))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Controller_ApplyLinksAsync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LinksBatchQuery)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ControllerServer).ApplyLinksAsync(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Controller/ApplyLinksAsync",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControllerServer).ApplyLinksAsync(ctx, req.(*LinksBatchQuery))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Controller_ListLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LinksBatchQuery)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ControllerServer).ListLinks(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.Controller/ListLinks",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControllerServer).ListLinks(ctx, req.(*LinksBatchQuery))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Controller_RemoveNode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ControllerInternal_RemoveNode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NetworkNode)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ControllerServer).RemoveNode(ctx, in)
+		return srv.(ControllerInternalServer).RemoveNode(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.Controller/RemoveNode",
+		FullMethod: "/pb.ControllerInternal/RemoveNode",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControllerServer).RemoveNode(ctx, req.(*NetworkNode))
+		return srv.(ControllerInternalServer).RemoveNode(ctx, req.(*NetworkNode))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Controller_ServiceDesc is the grpc.ServiceDesc for Controller service.
+// ControllerInternal_ServiceDesc is the grpc.ServiceDesc for ControllerInternal service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Controller_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.Controller",
-	HandlerType: (*ControllerServer)(nil),
+var ControllerInternal_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.ControllerInternal",
+	HandlerType: (*ControllerInternalServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ApplyLinks",
-			Handler:    _Controller_ApplyLinks_Handler,
-		},
-		{
-			MethodName: "ApplyLinksWithTimeout",
-			Handler:    _Controller_ApplyLinksWithTimeout_Handler,
-		},
-		{
-			MethodName: "ApplyLinksAsync",
-			Handler:    _Controller_ApplyLinksAsync_Handler,
-		},
-		{
-			MethodName: "ListLinks",
-			Handler:    _Controller_ListLinks_Handler,
-		},
-		{
 			MethodName: "RemoveNode",
-			Handler:    _Controller_RemoveNode_Handler,
+			Handler:    _ControllerInternal_RemoveNode_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
