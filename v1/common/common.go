@@ -7,5 +7,8 @@ type Mac string
 // IPv4 address
 type IPv4 string
 
-// IPv6 address
-type IPv6 string
+// MaskedIPv4 address
+type MaskedIPv4 string
+
+// MaskedIPv6 address
+type MaskedIPv6 string

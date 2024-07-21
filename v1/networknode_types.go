@@ -35,17 +35,10 @@ type NetworkNodeSpec struct {
 	NetworkIntfs []common.NetworkIntf `json:"network_intfs,omitempty"`
 }
 
-func (n *NetworkNode) ToProto() *pb.NetworkNode {
-	return &pb.NetworkNode{
+func (n *NetworkNode) ToProto() *pb.NetworkNodeQuery {
+	return &pb.NetworkNodeQuery{
 		Name:      n.Name,
 		Namespace: n.Namespace,
-		NetworkIntfs: func() []*pb.NetworkIntf {
-			var networkIntfs []*pb.NetworkIntf
-			for _, networkIntf := range n.Spec.NetworkIntfs {
-				networkIntfs = append(networkIntfs, networkIntf.ToProto())
-			}
-			return networkIntfs
-		}(),
 	}
 }
 
@@ -54,8 +47,8 @@ type NetworkNodeStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Ready equates to the readiness of the network node
-	Ready bool `json:"ready"`
+	// Phase equates to the phase of the network node, e.g. Pending, Running, Failed
+	Phase string `json:"phase,omitempty"`
 }
 
 // +kubebuilder:object:root=true

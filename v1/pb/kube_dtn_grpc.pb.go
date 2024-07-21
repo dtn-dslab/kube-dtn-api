@@ -216,7 +216,6 @@ var ControllerExternal_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ControllerInternalClient interface {
-	RemoveNode(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error)
 }
 
 type controllerInternalClient struct {
@@ -227,20 +226,10 @@ func NewControllerInternalClient(cc grpc.ClientConnInterface) ControllerInternal
 	return &controllerInternalClient{cc}
 }
 
-func (c *controllerInternalClient) RemoveNode(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error) {
-	out := new(BoolResponse)
-	err := c.cc.Invoke(ctx, "/pb.ControllerInternal/RemoveNode", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ControllerInternalServer is the server API for ControllerInternal service.
 // All implementations must embed UnimplementedControllerInternalServer
 // for forward compatibility
 type ControllerInternalServer interface {
-	RemoveNode(context.Context, *NetworkNode) (*BoolResponse, error)
 	mustEmbedUnimplementedControllerInternalServer()
 }
 
@@ -248,9 +237,6 @@ type ControllerInternalServer interface {
 type UnimplementedControllerInternalServer struct {
 }
 
-func (UnimplementedControllerInternalServer) RemoveNode(context.Context, *NetworkNode) (*BoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveNode not implemented")
-}
 func (UnimplementedControllerInternalServer) mustEmbedUnimplementedControllerInternalServer() {}
 
 // UnsafeControllerInternalServer may be embedded to opt out of forward compatibility for this service.
@@ -264,38 +250,15 @@ func RegisterControllerInternalServer(s grpc.ServiceRegistrar, srv ControllerInt
 	s.RegisterService(&ControllerInternal_ServiceDesc, srv)
 }
 
-func _ControllerInternal_RemoveNode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NetworkNode)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ControllerInternalServer).RemoveNode(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.ControllerInternal/RemoveNode",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControllerInternalServer).RemoveNode(ctx, req.(*NetworkNode))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // ControllerInternal_ServiceDesc is the grpc.ServiceDesc for ControllerInternal service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ControllerInternal_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "pb.ControllerInternal",
 	HandlerType: (*ControllerInternalServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "RemoveNode",
-			Handler:    _ControllerInternal_RemoveNode_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/proto/v1/kube_dtn.proto",
+	Methods:     []grpc.MethodDesc{},
+	Streams:     []grpc.StreamDesc{},
+	Metadata:    "api/proto/v1/kube_dtn.proto",
 }
 
 // DaemonClient is the client API for Daemon service.
@@ -305,8 +268,8 @@ type DaemonClient interface {
 	AddLinks(ctx context.Context, in *InternalLinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	DeleteLinks(ctx context.Context, in *InternalLinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	UpdateLinks(ctx context.Context, in *InternalLinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
-	ConfigurePod(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error)
-	UnconfigurePod(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error)
+	ConfigurePod(ctx context.Context, in *NetworkNodeQuery, opts ...grpc.CallOption) (*BoolResponse, error)
+	UnconfigurePod(ctx context.Context, in *NetworkNodeQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	SetupPod(ctx context.Context, in *PodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	DestroyPod(ctx context.Context, in *PodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 }
@@ -346,7 +309,7 @@ func (c *daemonClient) UpdateLinks(ctx context.Context, in *InternalLinksBatchQu
 	return out, nil
 }
 
-func (c *daemonClient) ConfigurePod(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error) {
+func (c *daemonClient) ConfigurePod(ctx context.Context, in *NetworkNodeQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/pb.Daemon/ConfigurePod", in, out, opts...)
 	if err != nil {
@@ -355,7 +318,7 @@ func (c *daemonClient) ConfigurePod(ctx context.Context, in *NetworkNode, opts .
 	return out, nil
 }
 
-func (c *daemonClient) UnconfigurePod(ctx context.Context, in *NetworkNode, opts ...grpc.CallOption) (*BoolResponse, error) {
+func (c *daemonClient) UnconfigurePod(ctx context.Context, in *NetworkNodeQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/pb.Daemon/UnconfigurePod", in, out, opts...)
 	if err != nil {
@@ -389,8 +352,8 @@ type DaemonServer interface {
 	AddLinks(context.Context, *InternalLinksBatchQuery) (*BoolResponse, error)
 	DeleteLinks(context.Context, *InternalLinksBatchQuery) (*BoolResponse, error)
 	UpdateLinks(context.Context, *InternalLinksBatchQuery) (*BoolResponse, error)
-	ConfigurePod(context.Context, *NetworkNode) (*BoolResponse, error)
-	UnconfigurePod(context.Context, *NetworkNode) (*BoolResponse, error)
+	ConfigurePod(context.Context, *NetworkNodeQuery) (*BoolResponse, error)
+	UnconfigurePod(context.Context, *NetworkNodeQuery) (*BoolResponse, error)
 	SetupPod(context.Context, *PodQuery) (*BoolResponse, error)
 	DestroyPod(context.Context, *PodQuery) (*BoolResponse, error)
 	mustEmbedUnimplementedDaemonServer()
@@ -409,10 +372,10 @@ func (UnimplementedDaemonServer) DeleteLinks(context.Context, *InternalLinksBatc
 func (UnimplementedDaemonServer) UpdateLinks(context.Context, *InternalLinksBatchQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateLinks not implemented")
 }
-func (UnimplementedDaemonServer) ConfigurePod(context.Context, *NetworkNode) (*BoolResponse, error) {
+func (UnimplementedDaemonServer) ConfigurePod(context.Context, *NetworkNodeQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConfigurePod not implemented")
 }
-func (UnimplementedDaemonServer) UnconfigurePod(context.Context, *NetworkNode) (*BoolResponse, error) {
+func (UnimplementedDaemonServer) UnconfigurePod(context.Context, *NetworkNodeQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnconfigurePod not implemented")
 }
 func (UnimplementedDaemonServer) SetupPod(context.Context, *PodQuery) (*BoolResponse, error) {
@@ -489,7 +452,7 @@ func _Daemon_UpdateLinks_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 func _Daemon_ConfigurePod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NetworkNode)
+	in := new(NetworkNodeQuery)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -501,13 +464,13 @@ func _Daemon_ConfigurePod_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/pb.Daemon/ConfigurePod",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DaemonServer).ConfigurePod(ctx, req.(*NetworkNode))
+		return srv.(DaemonServer).ConfigurePod(ctx, req.(*NetworkNodeQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Daemon_UnconfigurePod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NetworkNode)
+	in := new(NetworkNodeQuery)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -519,7 +482,7 @@ func _Daemon_UnconfigurePod_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/pb.Daemon/UnconfigurePod",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DaemonServer).UnconfigurePod(ctx, req.(*NetworkNode))
+		return srv.(DaemonServer).UnconfigurePod(ctx, req.(*NetworkNodeQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }

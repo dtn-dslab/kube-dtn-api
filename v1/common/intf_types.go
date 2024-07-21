@@ -6,7 +6,7 @@ import (
 
 type NetworkIntf struct {
 	// UID of the network interface, unique within all network interfaces, not within a pod
-	UID int64 `json:"uid"`
+	UID int32 `json:"uid"`
 
 	// Name of the network interface
 	Name string `json:"name"`
@@ -16,11 +16,11 @@ type NetworkIntf struct {
 
 	// IPv4 address of the network interface, Optional
 	// +optional
-	IPv4 IPv4 `json:"ipv4,omitempty"`
+	IPv4 MaskedIPv4 `json:"ipv4,omitempty"`
 
 	// IPv6 address of the network interface, Optional
 	// +optional
-	IPv6 IPv6 `json:"ipv6,omitempty"`
+	IPv6 MaskedIPv6 `json:"ipv6,omitempty"`
 }
 
 func (n *NetworkIntf) ToProto() *pb.NetworkIntf {
