@@ -38,7 +38,7 @@ type PhysicalInterfaceSpec struct {
 	// Name of the physical interface
 	Name string `json:"name"`
 
-	// Mac address of the physical interface
+	// Mac address of remote physical interface
 	Mac common.Mac `json:"mac"`
 
 	// IPv4 address of the physical interface, Optional

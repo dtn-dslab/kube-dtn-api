@@ -15,6 +15,18 @@ message NetworkIntf {
   string ipv6 = 5;
 }
 
+message PhysicalIntf {
+  int32 uid = 1;
+  string name = 2;
+  string mac = 3;
+  string backend = 4;
+  string device_name = 5;
+  string node_name = 6;
+  string vni = 7;
+  string vtep_ip = 8;
+  string dst_port = 9;
+}
+
 message NetworkNodeQuery {
   string name = 1;
   string namespace = 2;
@@ -84,13 +96,12 @@ message InternalLink {
   LinkProperties properties = 11;
 }
 
-message LinksBatchQuery {
+message ApplyLinksQuery {
   google.protobuf.Timestamp version = 1;
   repeated Link links = 2;
-  bool full = 3;
-  int32 timeout = 4;
-  string namespace = 5;
-  string name = 6;
+}
+
+message ListLinksQuery {
 }
 
 message LinksBatchResponse {
@@ -107,11 +118,8 @@ message BoolResponse {
 }
 
 service ControllerExternal {
-  rpc ApplyLinks (LinksBatchQuery) returns (BoolResponse);
-  rpc ApplyLinksWithTimeout (LinksBatchQuery) returns (BoolResponse);
-  rpc ApplyLinksAsync (LinksBatchQuery) returns (BoolResponse);
-
-  rpc ListLinks (LinksBatchQuery) returns (LinksBatchResponse);
+  rpc ApplyLinks (ApplyLinksQuery) returns (BoolResponse);
+  rpc ListLinks (ListLinksQuery) returns (LinksBatchResponse);
 }
 
 // For internal use
@@ -126,6 +134,9 @@ service Daemon {
 
   rpc ConfigurePod (NetworkNodeQuery) returns (BoolResponse);
   rpc UnconfigurePod (NetworkNodeQuery) returns (BoolResponse);
+
+  rpc ConfigurePhysicalIntf (PhysicalIntf) returns (BoolResponse);
+  rpc UnconfigurePhysicalIntf (PhysicalIntf) returns (BoolResponse);
 
   rpc SetupPod (PodQuery) returns (BoolResponse);
   rpc DestroyPod (PodQuery) returns (BoolResponse);

@@ -22,10 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ControllerExternalClient interface {
-	ApplyLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
-	ApplyLinksWithTimeout(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
-	ApplyLinksAsync(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
-	ListLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*LinksBatchResponse, error)
+	ApplyLinks(ctx context.Context, in *ApplyLinksQuery, opts ...grpc.CallOption) (*BoolResponse, error)
+	ListLinks(ctx context.Context, in *ListLinksQuery, opts ...grpc.CallOption) (*LinksBatchResponse, error)
 }
 
 type controllerExternalClient struct {
@@ -36,7 +34,7 @@ func NewControllerExternalClient(cc grpc.ClientConnInterface) ControllerExternal
 	return &controllerExternalClient{cc}
 }
 
-func (c *controllerExternalClient) ApplyLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
+func (c *controllerExternalClient) ApplyLinks(ctx context.Context, in *ApplyLinksQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/pb.ControllerExternal/ApplyLinks", in, out, opts...)
 	if err != nil {
@@ -45,25 +43,7 @@ func (c *controllerExternalClient) ApplyLinks(ctx context.Context, in *LinksBatc
 	return out, nil
 }
 
-func (c *controllerExternalClient) ApplyLinksWithTimeout(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
-	out := new(BoolResponse)
-	err := c.cc.Invoke(ctx, "/pb.ControllerExternal/ApplyLinksWithTimeout", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *controllerExternalClient) ApplyLinksAsync(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
-	out := new(BoolResponse)
-	err := c.cc.Invoke(ctx, "/pb.ControllerExternal/ApplyLinksAsync", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *controllerExternalClient) ListLinks(ctx context.Context, in *LinksBatchQuery, opts ...grpc.CallOption) (*LinksBatchResponse, error) {
+func (c *controllerExternalClient) ListLinks(ctx context.Context, in *ListLinksQuery, opts ...grpc.CallOption) (*LinksBatchResponse, error) {
 	out := new(LinksBatchResponse)
 	err := c.cc.Invoke(ctx, "/pb.ControllerExternal/ListLinks", in, out, opts...)
 	if err != nil {
@@ -76,10 +56,8 @@ func (c *controllerExternalClient) ListLinks(ctx context.Context, in *LinksBatch
 // All implementations must embed UnimplementedControllerExternalServer
 // for forward compatibility
 type ControllerExternalServer interface {
-	ApplyLinks(context.Context, *LinksBatchQuery) (*BoolResponse, error)
-	ApplyLinksWithTimeout(context.Context, *LinksBatchQuery) (*BoolResponse, error)
-	ApplyLinksAsync(context.Context, *LinksBatchQuery) (*BoolResponse, error)
-	ListLinks(context.Context, *LinksBatchQuery) (*LinksBatchResponse, error)
+	ApplyLinks(context.Context, *ApplyLinksQuery) (*BoolResponse, error)
+	ListLinks(context.Context, *ListLinksQuery) (*LinksBatchResponse, error)
 	mustEmbedUnimplementedControllerExternalServer()
 }
 
@@ -87,16 +65,10 @@ type ControllerExternalServer interface {
 type UnimplementedControllerExternalServer struct {
 }
 
-func (UnimplementedControllerExternalServer) ApplyLinks(context.Context, *LinksBatchQuery) (*BoolResponse, error) {
+func (UnimplementedControllerExternalServer) ApplyLinks(context.Context, *ApplyLinksQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApplyLinks not implemented")
 }
-func (UnimplementedControllerExternalServer) ApplyLinksWithTimeout(context.Context, *LinksBatchQuery) (*BoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ApplyLinksWithTimeout not implemented")
-}
-func (UnimplementedControllerExternalServer) ApplyLinksAsync(context.Context, *LinksBatchQuery) (*BoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ApplyLinksAsync not implemented")
-}
-func (UnimplementedControllerExternalServer) ListLinks(context.Context, *LinksBatchQuery) (*LinksBatchResponse, error) {
+func (UnimplementedControllerExternalServer) ListLinks(context.Context, *ListLinksQuery) (*LinksBatchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListLinks not implemented")
 }
 func (UnimplementedControllerExternalServer) mustEmbedUnimplementedControllerExternalServer() {}
@@ -113,7 +85,7 @@ func RegisterControllerExternalServer(s grpc.ServiceRegistrar, srv ControllerExt
 }
 
 func _ControllerExternal_ApplyLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LinksBatchQuery)
+	in := new(ApplyLinksQuery)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -125,49 +97,13 @@ func _ControllerExternal_ApplyLinks_Handler(srv interface{}, ctx context.Context
 		FullMethod: "/pb.ControllerExternal/ApplyLinks",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControllerExternalServer).ApplyLinks(ctx, req.(*LinksBatchQuery))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ControllerExternal_ApplyLinksWithTimeout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LinksBatchQuery)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ControllerExternalServer).ApplyLinksWithTimeout(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.ControllerExternal/ApplyLinksWithTimeout",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControllerExternalServer).ApplyLinksWithTimeout(ctx, req.(*LinksBatchQuery))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ControllerExternal_ApplyLinksAsync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LinksBatchQuery)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ControllerExternalServer).ApplyLinksAsync(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.ControllerExternal/ApplyLinksAsync",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControllerExternalServer).ApplyLinksAsync(ctx, req.(*LinksBatchQuery))
+		return srv.(ControllerExternalServer).ApplyLinks(ctx, req.(*ApplyLinksQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ControllerExternal_ListLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LinksBatchQuery)
+	in := new(ListLinksQuery)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -179,7 +115,7 @@ func _ControllerExternal_ListLinks_Handler(srv interface{}, ctx context.Context,
 		FullMethod: "/pb.ControllerExternal/ListLinks",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControllerExternalServer).ListLinks(ctx, req.(*LinksBatchQuery))
+		return srv.(ControllerExternalServer).ListLinks(ctx, req.(*ListLinksQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -194,14 +130,6 @@ var ControllerExternal_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ApplyLinks",
 			Handler:    _ControllerExternal_ApplyLinks_Handler,
-		},
-		{
-			MethodName: "ApplyLinksWithTimeout",
-			Handler:    _ControllerExternal_ApplyLinksWithTimeout_Handler,
-		},
-		{
-			MethodName: "ApplyLinksAsync",
-			Handler:    _ControllerExternal_ApplyLinksAsync_Handler,
 		},
 		{
 			MethodName: "ListLinks",
@@ -270,6 +198,8 @@ type DaemonClient interface {
 	UpdateLinks(ctx context.Context, in *InternalLinksBatchQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	ConfigurePod(ctx context.Context, in *NetworkNodeQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	UnconfigurePod(ctx context.Context, in *NetworkNodeQuery, opts ...grpc.CallOption) (*BoolResponse, error)
+	ConfigurePhysicalIntf(ctx context.Context, in *PhysicalIntf, opts ...grpc.CallOption) (*BoolResponse, error)
+	UnconfigurePhysicalIntf(ctx context.Context, in *PhysicalIntf, opts ...grpc.CallOption) (*BoolResponse, error)
 	SetupPod(ctx context.Context, in *PodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	DestroyPod(ctx context.Context, in *PodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 }
@@ -327,6 +257,24 @@ func (c *daemonClient) UnconfigurePod(ctx context.Context, in *NetworkNodeQuery,
 	return out, nil
 }
 
+func (c *daemonClient) ConfigurePhysicalIntf(ctx context.Context, in *PhysicalIntf, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
+	err := c.cc.Invoke(ctx, "/pb.Daemon/ConfigurePhysicalIntf", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *daemonClient) UnconfigurePhysicalIntf(ctx context.Context, in *PhysicalIntf, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
+	err := c.cc.Invoke(ctx, "/pb.Daemon/UnconfigurePhysicalIntf", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *daemonClient) SetupPod(ctx context.Context, in *PodQuery, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/pb.Daemon/SetupPod", in, out, opts...)
@@ -354,6 +302,8 @@ type DaemonServer interface {
 	UpdateLinks(context.Context, *InternalLinksBatchQuery) (*BoolResponse, error)
 	ConfigurePod(context.Context, *NetworkNodeQuery) (*BoolResponse, error)
 	UnconfigurePod(context.Context, *NetworkNodeQuery) (*BoolResponse, error)
+	ConfigurePhysicalIntf(context.Context, *PhysicalIntf) (*BoolResponse, error)
+	UnconfigurePhysicalIntf(context.Context, *PhysicalIntf) (*BoolResponse, error)
 	SetupPod(context.Context, *PodQuery) (*BoolResponse, error)
 	DestroyPod(context.Context, *PodQuery) (*BoolResponse, error)
 	mustEmbedUnimplementedDaemonServer()
@@ -377,6 +327,12 @@ func (UnimplementedDaemonServer) ConfigurePod(context.Context, *NetworkNodeQuery
 }
 func (UnimplementedDaemonServer) UnconfigurePod(context.Context, *NetworkNodeQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnconfigurePod not implemented")
+}
+func (UnimplementedDaemonServer) ConfigurePhysicalIntf(context.Context, *PhysicalIntf) (*BoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConfigurePhysicalIntf not implemented")
+}
+func (UnimplementedDaemonServer) UnconfigurePhysicalIntf(context.Context, *PhysicalIntf) (*BoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnconfigurePhysicalIntf not implemented")
 }
 func (UnimplementedDaemonServer) SetupPod(context.Context, *PodQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetupPod not implemented")
@@ -487,6 +443,42 @@ func _Daemon_UnconfigurePod_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Daemon_ConfigurePhysicalIntf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PhysicalIntf)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServer).ConfigurePhysicalIntf(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Daemon/ConfigurePhysicalIntf",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServer).ConfigurePhysicalIntf(ctx, req.(*PhysicalIntf))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Daemon_UnconfigurePhysicalIntf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PhysicalIntf)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServer).UnconfigurePhysicalIntf(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Daemon/UnconfigurePhysicalIntf",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServer).UnconfigurePhysicalIntf(ctx, req.(*PhysicalIntf))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Daemon_SetupPod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PodQuery)
 	if err := dec(in); err != nil {
@@ -549,6 +541,14 @@ var Daemon_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UnconfigurePod",
 			Handler:    _Daemon_UnconfigurePod_Handler,
+		},
+		{
+			MethodName: "ConfigurePhysicalIntf",
+			Handler:    _Daemon_ConfigurePhysicalIntf_Handler,
+		},
+		{
+			MethodName: "UnconfigurePhysicalIntf",
+			Handler:    _Daemon_UnconfigurePhysicalIntf_Handler,
 		},
 		{
 			MethodName: "SetupPod",
