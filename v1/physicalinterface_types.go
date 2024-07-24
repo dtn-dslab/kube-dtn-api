@@ -18,6 +18,7 @@ package v1
 
 import (
 	common "dslab.sjtu/kube-dtn/api/v1/common"
+	pb "dslab.sjtu/kube-dtn/api/v1/pb"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -41,6 +42,9 @@ type PhysicalInterfaceSpec struct {
 	// Mac address of remote physical interface
 	Mac common.Mac `json:"mac"`
 
+	// NodeName is the name of the node where the virtual interface is configured
+	NodeName string `json:"node_name"`
+
 	// IPv4 address of the physical interface, Optional
 	RawDevice *RawDeviceSpec `json:"raw_device,omitempty"`
 
@@ -48,12 +52,30 @@ type PhysicalInterfaceSpec struct {
 	Vxlan *VxlanSpec `json:"vxlan,omitempty"`
 }
 
+func (p *PhysicalInterfaceSpec) ToProto() *pb.PhysicalIntf {
+	intf := &pb.PhysicalIntf{
+		Uid:      p.UID,
+		Name:     p.Name,
+		Mac:      string(p.Mac),
+		NodeName: p.NodeName,
+		Backend:  p.Backend,
+	}
+
+	switch p.Backend {
+	case "RawDevice":
+		intf.DeviceName = p.RawDevice.DeviceName
+	case "Vxlan":
+		intf.Vni = p.Vxlan.VNI
+		intf.VtepIp = string(p.Vxlan.VtepIP)
+		intf.DstPort = p.Vxlan.DstPort
+	}
+
+	return intf
+}
+
 type RawDeviceSpec struct {
 	// Name of the raw device
 	DeviceName string `json:"device_name"`
-
-	// NodeName is the name of the node where the raw device is located
-	NodeName string `json:"node_name"`
 }
 
 type VxlanSpec struct {

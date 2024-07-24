@@ -22,9 +22,9 @@ message PhysicalIntf {
   string backend = 4;
   string device_name = 5;
   string node_name = 6;
-  string vni = 7;
+  int32 vni = 7;
   string vtep_ip = 8;
-  string dst_port = 9;
+  int32 dst_port = 9;
 }
 
 message NetworkNodeQuery {
