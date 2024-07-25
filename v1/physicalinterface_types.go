@@ -25,6 +25,11 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
+const (
+	VxlanBackend     = "vxlan"
+	RawDeviceBackend = "raw_device"
+)
+
 // PhysicalInterfaceSpec defines the desired state of PhysicalInterface
 type PhysicalInterfaceSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
@@ -33,7 +38,7 @@ type PhysicalInterfaceSpec struct {
 	// UID of the physical interface, unique within all interfaces, including network interfaces
 	UID int32 `json:"uid"`
 
-	// Backend is the backend of the physical interface, e.g. RawDevice, Vxlan
+	// Backend is the backend of the physical interface, e.g. raw_device, vxlan
 	Backend string `json:"backend"`
 
 	// Name of the physical interface
