@@ -21,6 +21,9 @@ type NetworkIntf struct {
 	// IPv6 address of the network interface, Optional
 	// +optional
 	IPv6 MaskedIPv6 `json:"ipv6,omitempty"`
+
+	// Owner pod's k8s namespace, uid only unique within the namespace
+	Ns string `json:"Ns,omitempty"`
 }
 
 func (n *NetworkIntf) ToProto() *pb.NetworkIntf {
@@ -30,5 +33,10 @@ func (n *NetworkIntf) ToProto() *pb.NetworkIntf {
 		Mac:  string(n.Mac),
 		Ipv4: string(n.IPv4),
 		Ipv6: string(n.IPv6),
+		Ns:   string(n.Ns),
 	}
+}
+
+func GetIntfIDKey(ns string, uid int32) string {
+	return ns + "-" + string(uid)
 }

@@ -13,6 +13,8 @@ message NetworkIntf {
   string mac = 3;
   string ipv4 = 4;
   string ipv6 = 5;
+  // newly added
+  string ns = 6;
 }
 
 message PhysicalIntf {
@@ -25,6 +27,8 @@ message PhysicalIntf {
   int32 vni = 7;
   string vtep_ip = 8;
   int32 dst_port = 9;
+  // newly added
+  string ns = 10;
 }
 
 message NetworkNodeQuery {
@@ -38,6 +42,10 @@ message Link {
   int32 dst = 3;
   LinkProperties properties = 4;
   bool uni_directional = 5;
+  // newly added
+  string src_ns = 6;
+  string dst_ns = 7;
+  string section_id = 8;
 }
 
 message LinkProperties {
@@ -94,6 +102,10 @@ message InternalLink {
   string peer_mac = 10;
 
   LinkProperties properties = 11;
+  // newly added
+  string peer_kube_ns = 12;
+  string peer_net_ns = 13;
+  string section_id = 14;
 }
 
 message ApplyLinksQuery {
@@ -101,13 +113,40 @@ message ApplyLinksQuery {
   repeated Link links = 2;
 }
 
+message ApplyLinksBatchInNsQuery{
+  google.protobuf.Timestamp version = 1;
+  repeated Link links = 2;
+  bool fully_update = 3;
+  string ns = 4;
+  string section_id = 5;
+}
+
+// Template for link query
+message LinkQueryModel{
+  int64 uid = 1;
+  int32 src = 2;
+  int32 dst = 3;
+
+  string uni_directional = 5;// only "true"/"false" will join, others have no effect 
+  // newly added
+  string src_ns = 6;
+  string dst_ns = 7;
+  string section_id = 8;
+}
+
 message ListLinksQuery {
+  repeated LinkQueryModel query = 1;
 }
 
 message LinksBatchResponse {
   bool response = 1;
   repeated Link links = 2;
 }
+
+message DeleteLinksQuery{
+  repeated LinkQueryModel query = 1;
+}
+
 
 message InternalLinksBatchQuery {
   repeated InternalLink links = 1;
@@ -119,7 +158,9 @@ message BoolResponse {
 
 service ControllerExternal {
   rpc ApplyLinks (ApplyLinksQuery) returns (BoolResponse);
+  rpc ApplyLinksBatchInNs (ApplyLinksBatchInNsQuery) returns (BoolResponse);
   rpc ListLinks (ListLinksQuery) returns (LinksBatchResponse);
+  rpc DeleteLinks (DeleteLinksQuery) returns (BoolResponse);
 }
 
 // For internal use

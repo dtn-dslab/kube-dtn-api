@@ -75,3 +75,10 @@ type NetworkNodeList struct {
 func init() {
 	SchemeBuilder.Register(&NetworkNode{}, &NetworkNodeList{})
 }
+
+// Write Namespace to NetworkIntfs
+func PreProcessNetworkNode(n *NetworkNode) {
+	for i := range n.Spec.NetworkIntfs {
+		n.Spec.NetworkIntfs[i].Ns = n.Namespace
+	}
+}

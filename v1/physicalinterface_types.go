@@ -57,22 +57,23 @@ type PhysicalInterfaceSpec struct {
 	Vxlan *VxlanSpec `json:"vxlan,omitempty"`
 }
 
-func (p *PhysicalInterfaceSpec) ToProto() *pb.PhysicalIntf {
+func (p *PhysicalInterface) ToProto() *pb.PhysicalIntf {
 	intf := &pb.PhysicalIntf{
-		Uid:      p.UID,
-		Name:     p.Name,
-		Mac:      string(p.Mac),
-		NodeName: p.NodeName,
-		Backend:  p.Backend,
+		Uid:      p.Spec.UID,
+		Ns:       p.Namespace, // use k8s namespace
+		Name:     p.Spec.Name,
+		Mac:      string(p.Spec.Mac),
+		NodeName: p.Spec.NodeName,
+		Backend:  p.Spec.Backend,
 	}
 
-	switch p.Backend {
+	switch p.Spec.Backend {
 	case "RawDevice":
-		intf.DeviceName = p.RawDevice.DeviceName
+		intf.DeviceName = p.Spec.RawDevice.DeviceName
 	case "Vxlan":
-		intf.Vni = p.Vxlan.VNI
-		intf.VtepIp = string(p.Vxlan.VtepIP)
-		intf.DstPort = p.Vxlan.DstPort
+		intf.Vni = p.Spec.Vxlan.VNI
+		intf.VtepIp = string(p.Spec.Vxlan.VtepIP)
+		intf.DstPort = p.Spec.Vxlan.DstPort
 	}
 
 	return intf
