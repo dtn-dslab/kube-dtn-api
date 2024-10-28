@@ -132,6 +132,12 @@ message LinkQueryModel{
   string src_ns = 6;
   string dst_ns = 7;
   string section_id = 8;
+
+  string phase = 9;
+}
+
+message LinkQueryRes {
+  repeated Link links = 1;
 }
 
 message ListLinksQuery {
@@ -140,7 +146,7 @@ message ListLinksQuery {
 
 message LinksBatchResponse {
   bool response = 1;
-  repeated Link links = 2;
+  repeated LinkQueryRes all_query_res = 2;
 }
 
 message DeleteLinksQuery{
