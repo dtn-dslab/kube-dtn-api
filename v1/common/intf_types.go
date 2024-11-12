@@ -37,6 +37,28 @@ func (n *NetworkIntf) ToProto() *pb.NetworkIntf {
 	}
 }
 
+func (n *NetworkIntf) Equal(other *NetworkIntf) bool {
+	if n.UID != other.UID {
+		return false
+	}
+	if n.Name != other.Name {
+		return false
+	}
+	if n.Mac != other.Mac {
+		return false
+	}
+	if n.IPv4 != other.IPv4 {
+		return false
+	}
+	if n.IPv6 != other.IPv6 {
+		return false
+	}
+	if n.Ns != other.Ns {
+		return false
+	}
+	return true
+}
+
 func GetIntfIDKey(ns string, uid int32) string {
 	return ns + "-" + string(uid)
 }

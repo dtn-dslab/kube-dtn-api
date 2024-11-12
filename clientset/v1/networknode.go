@@ -25,54 +25,7 @@ type NetworkNodeInterface interface {
 	Unstructured(ctx context.Context, name string, opts metav1.GetOptions, subresources ...string) (*unstructured.Unstructured, error)
 }
 
-// Interface is the clientset for networknode API group
-type Interface interface {
-	NetworkNode(namespace string) NetworkNodeInterface
-}
-
-// Clientset is a clientset for networknode API group
-type Clientset struct {
-	dInterface dynamic.NamespaceableResourceInterface
-	restClient rest.Interface
-}
-
-const resourceName = "networknodes"
-
-var gvr = schema.GroupVersionResource{
-	Group:    kubedtnv1.GroupVersion.Group,
-	Version:  kubedtnv1.GroupVersion.Version,
-	Resource: resourceName,
-}
-
-// NewForConfig returns a new clientset for the given config
-func NewForConfig(c *rest.Config) (*Clientset, error) {
-	config := *c
-	config.ContentConfig.GroupVersion = &kubedtnv1.GroupVersion
-	config.APIPath = "/apis"
-	config.NegotiatedSerializer = scheme.Codecs.WithoutConversion()
-	config.UserAgent = rest.DefaultKubernetesUserAgent()
-	dClient, err := dynamic.NewForConfig(c)
-	if err != nil {
-		return nil, err
-	}
-	dInterface := dClient.Resource(gvr)
-	rClient, err := rest.RESTClientFor(&config)
-	if err != nil {
-		return nil, err
-	}
-	return &Clientset{
-		dInterface: dInterface,
-		restClient: rClient,
-	}, nil
-}
-
-func (c *Clientset) NetworkNode(namespace string) NetworkNodeInterface {
-	return &networkNodeClient{
-		dInterface: c.dInterface,
-		restClient: c.restClient,
-		ns:         namespace,
-	}
-}
+const networkNodeResourceName = "networknodes"
 
 type networkNodeClient struct {
 	dInterface dynamic.NamespaceableResourceInterface
@@ -80,12 +33,25 @@ type networkNodeClient struct {
 	ns         string
 }
 
+func (c *Clientset) NetworkNode(namespace string) NetworkNodeInterface {
+	dInterface := c.dynamicClient.Resource(schema.GroupVersionResource{
+		Group:    kubedtnv1.GroupVersion.Group,
+		Version:  kubedtnv1.GroupVersion.Version,
+		Resource: networkNodeResourceName,
+	})
+	return &networkNodeClient{
+		dInterface: dInterface,
+		restClient: c.restClient,
+		ns:         namespace,
+	}
+}
+
 func (t *networkNodeClient) List(ctx context.Context, opts metav1.ListOptions) (*kubedtnv1.NetworkNodeList, error) {
 	result := kubedtnv1.NetworkNodeList{}
 	err := t.restClient.
 		Get().
 		Namespace(t.ns).
-		Resource(resourceName).
+		Resource(networkNodeResourceName).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Do(ctx).
 		Into(&result)
@@ -98,7 +64,7 @@ func (t *networkNodeClient) Get(ctx context.Context, name string, opts metav1.Ge
 	err := t.restClient.
 		Get().
 		Namespace(t.ns).
-		Resource(resourceName).
+		Resource(networkNodeResourceName).
 		Name(name).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Do(ctx).
@@ -112,7 +78,7 @@ func (t *networkNodeClient) Create(ctx context.Context, networkNode *kubedtnv1.N
 	err := t.restClient.
 		Post().
 		Namespace(t.ns).
-		Resource(resourceName).
+		Resource(networkNodeResourceName).
 		Body(networkNode).
 		Do(ctx).
 		Into(&result)
@@ -125,7 +91,7 @@ func (t *networkNodeClient) Watch(ctx context.Context, opts metav1.ListOptions) 
 	return t.restClient.
 		Get().
 		Namespace(t.ns).
-		Resource(resourceName).
+		Resource(networkNodeResourceName).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Watch(ctx)
 }
@@ -134,7 +100,7 @@ func (t *networkNodeClient) Delete(ctx context.Context, name string, opts metav1
 	return t.restClient.
 		Delete().
 		Namespace(t.ns).
-		Resource(resourceName).
+		Resource(networkNodeResourceName).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Name(name).
 		Do(ctx).
@@ -146,7 +112,7 @@ func (t *networkNodeClient) Update(ctx context.Context, networkNode *kubedtnv1.N
 	err := t.restClient.
 		Put().
 		Namespace(t.ns).
-		Resource(resourceName).
+		Resource(networkNodeResourceName).
 		Name(networkNode.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(networkNode).
@@ -160,7 +126,7 @@ func (t *networkNodeClient) UpdateStatus(ctx context.Context, networkNode *kubed
 	err := t.restClient.
 		Put().
 		Namespace(t.ns).
-		Resource(resourceName).
+		Resource(networkNodeResourceName).
 		Name(networkNode.Name).
 		SubResource("status").
 		VersionedParams(&opts, scheme.ParameterCodec).
@@ -172,8 +138,4 @@ func (t *networkNodeClient) UpdateStatus(ctx context.Context, networkNode *kubed
 
 func (t *networkNodeClient) Unstructured(ctx context.Context, name string, opts metav1.GetOptions, subresources ...string) (*unstructured.Unstructured, error) {
 	return t.dInterface.Namespace(t.ns).Get(ctx, name, opts, subresources...)
-}
-
-func init() {
-	kubedtnv1.AddToScheme(scheme.Scheme)
 }

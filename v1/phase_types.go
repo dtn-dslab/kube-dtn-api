@@ -1,5 +1,11 @@
 package v1
 
+import (
+	"crypto/rand"
+	"fmt"
+	"time"
+)
+
 const (
 	// Some transient status. Expect the Reconciler to do the next step, or Reconciler is doing now.
 
@@ -11,6 +17,11 @@ const (
 	// Equal to K8s's DeletionTimestamp != nil, but also necessary for HealthCheckServer.
 	PhaseTerminating = "Terminating"
 
+	// Transient phase only for newly add link. Update Link is Pending.
+	PhaseInitializing = "Initializing"
+	// Node intf change (like IntfName, MAC Addr, etc.) and trigger the link to rebuild.
+	PhaseRebuilding = "Rebuilding"
+
 	// Some Steady Status, can be checked by HealthCheckServer
 
 	PhaseRunning     = "Running"
@@ -20,22 +31,47 @@ const (
 	PhaseError = "Error"
 	// Help know the error is from which part. Equal to PhaseError. Maybe only transient phase can be appended with ErrorSuffix.
 	ErrorSuffix = "Error"
+	// For link apply error, try to clean the data plane entity.
+	PhaseErrorAndCleaning = "ErrorAndCleaning"
+	PhaseErrorAndCleaned  = "ErrorAndCleaned"
 
 	// If HealthCheckServer check the K8s Node/Daemon is unhealthy, the phase will be Unhealthy.
 	PhaseUnhealthy  = "Unhealthy"
 	UnhealthySuffix = "Unhealthy"
 
-	FinalizerName = "kubedtn.dslab.sjtu/finalizer"
+	PhaseUnknown = "Unknown"
 
-	// When kClient do write, it can set this annotation to skip once Reconcile process, Reconciler need to remove it (Currently only for networkNode)
-	AnnotationReconcileSkip = "kubedtn.dslab.sjtu/reconcile-skip"
+	FinalizerName    = "kubedtn.dslab.sjtu/finalizer"
+	AnnotationIsFake = "kubedtn.dslab.sjtu/annotation/is-fake"
 )
 
 const (
 	// Used by daemon to wait for expected phase
-	PhasePollingSleepMs = 50
-	PhaseWaitTimeoutMs  = 3000
+	PhasePollingSleepMs = 100
+	PhaseWaitTimeoutMs  = 5000
+
+	ErrorRetryDeleteCountDefault = 3
 )
+
+type VersionStatus struct {
+	VersionId string `json:"version_id,omitempty"`
+
+	CreatedAt time.Time  `json:"created_at,omitempty"`
+	UpdatedAt time.Time  `json:"updated_at,omitempty"` // may not used
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+}
+
+func NewVersionStatus(now time.Time) *VersionStatus {
+	tsInt := now.UnixNano()
+	randomBytes := make([]byte, 8)
+	rand.Read(randomBytes)
+
+	return &VersionStatus{
+		VersionId: fmt.Sprintf("%x-%x", tsInt, randomBytes),
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+}
 
 func IsInTransientPhase(s string) bool {
 	return s == PhasePending || s == PhaseCleaning || s == PhaseTerminating

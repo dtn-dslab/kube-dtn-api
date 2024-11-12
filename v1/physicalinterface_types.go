@@ -26,8 +26,9 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 const (
-	VxlanBackend     = "vxlan"
-	RawDeviceBackend = "raw_device"
+	VxlanBackend      = "vxlan"
+	RawDeviceBackend  = "raw_device"
+	FakeNetworkNodeNs = "fake_network_node"
 )
 
 // PhysicalInterfaceSpec defines the desired state of PhysicalInterface
@@ -68,9 +69,9 @@ func (p *PhysicalInterface) ToProto() *pb.PhysicalIntf {
 	}
 
 	switch p.Spec.Backend {
-	case "RawDevice":
+	case RawDeviceBackend:
 		intf.DeviceName = p.Spec.RawDevice.DeviceName
-	case "Vxlan":
+	case VxlanBackend:
 		intf.Vni = p.Spec.Vxlan.VNI
 		intf.VtepIp = string(p.Spec.Vxlan.VtepIP)
 		intf.DstPort = p.Spec.Vxlan.DstPort
@@ -101,7 +102,8 @@ type PhysicalInterfaceStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Phase equates to the phase of the physical interface, e.g. Pending, Running, Failed
-	Phase string `json:"phase,omitempty"`
+	Phase            string `json:"phase,omitempty"`
+	DeleteRetryCount int32  `json:"delete_retry_count,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -127,4 +129,19 @@ type PhysicalInterfaceList struct {
 
 func init() {
 	SchemeBuilder.Register(&PhysicalInterface{}, &PhysicalInterfaceList{})
+}
+
+// TODO: Use k8s NodeName as the name of the fake node? Or change daemon's logic of getting the fake node name? (Currently, it's the same as the NodeName)
+func (p *PhysicalInterface) GetFakeNetworkNode() NetworkNode {
+	return NetworkNode{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      p.Spec.NodeName, // Or use p.Spec.Name?
+			Namespace: FakeNetworkNodeNs,
+			Annotations: map[string]string{
+				AnnotationIsFake: "true",
+			},
+		},
+		Spec:   NetworkNodeSpec{},
+		Status: NetworkNodeStatus{},
+	}
 }
