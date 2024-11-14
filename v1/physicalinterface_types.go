@@ -67,9 +67,9 @@ func (p *PhysicalInterfaceSpec) ToProto() *pb.PhysicalIntf {
 	}
 
 	switch p.Backend {
-	case "RawDevice":
+	case RawDeviceBackend:
 		intf.DeviceName = p.RawDevice.DeviceName
-	case "Vxlan":
+	case VxlanBackend:
 		intf.Vni = p.Vxlan.VNI
 		intf.VtepIp = string(p.Vxlan.VtepIP)
 		intf.DstPort = p.Vxlan.DstPort

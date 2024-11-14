@@ -94,6 +94,9 @@ message InternalLink {
   string peer_mac = 10;
 
   LinkProperties properties = 11;
+  // If rawDevice, set it!
+  string local_raw_device_name = 12;
+  string peer_raw_device_name = 13;
 }
 
 message ApplyLinksQuery {
