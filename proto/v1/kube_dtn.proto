@@ -114,6 +114,11 @@ message InternalLink {
 
   string local_intf_type = 17;
   string peer_intf_type = 18;
+
+  int32 local_intf_uid = 19;
+  int32 peer_intf_uid = 20;
+
+  string direction_type = 21;
 }
 
 message ApplyLinksQuery {
