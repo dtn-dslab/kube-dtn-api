@@ -7,6 +7,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -23,6 +24,10 @@ type NetworkNodeInterface interface {
 	Delete(ctx context.Context, name string, opts metav1.DeleteOptions) error
 	Watch(ctx context.Context, opts metav1.ListOptions) (watch.Interface, error)
 	Unstructured(ctx context.Context, name string, opts metav1.GetOptions, subresources ...string) (*unstructured.Unstructured, error)
+
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts metav1.PatchOptions, subresources ...string) (*kubedtnv1.NetworkNode, error)
+
+	PatchStatus(ctx context.Context, name string, pt types.PatchType, data []byte, opts metav1.PatchOptions, subresources ...string) (*kubedtnv1.NetworkNode, error)
 }
 
 const networkNodeResourceName = "networknodes"
@@ -138,4 +143,34 @@ func (t *networkNodeClient) UpdateStatus(ctx context.Context, networkNode *kubed
 
 func (t *networkNodeClient) Unstructured(ctx context.Context, name string, opts metav1.GetOptions, subresources ...string) (*unstructured.Unstructured, error) {
 	return t.dInterface.Namespace(t.ns).Get(ctx, name, opts, subresources...)
+}
+
+func (t *networkNodeClient) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts metav1.PatchOptions, subresources ...string) (*kubedtnv1.NetworkNode, error) {
+	result := kubedtnv1.NetworkNode{}
+	err := t.restClient.
+		Patch(pt).
+		Namespace(t.ns).
+		Resource(networkNodeResourceName).
+		Name(name).
+		SubResource(subresources...).
+		VersionedParams(&opts, scheme.ParameterCodec).
+		Body(data).
+		Do(ctx).
+		Into(&result)
+	return &result, err
+}
+
+func (t *networkNodeClient) PatchStatus(ctx context.Context, name string, pt types.PatchType, data []byte, opts metav1.PatchOptions, subresources ...string) (*kubedtnv1.NetworkNode, error) {
+	result := kubedtnv1.NetworkNode{}
+	err := t.restClient.
+		Patch(pt).
+		Namespace(t.ns).
+		Resource(networkNodeResourceName).
+		Name(name).
+		SubResource("status").
+		VersionedParams(&opts, scheme.ParameterCodec).
+		Body(data).
+		Do(ctx).
+		Into(&result)
+	return &result, err
 }

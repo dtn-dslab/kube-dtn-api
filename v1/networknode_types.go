@@ -25,6 +25,15 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
+type PodStatus struct {
+	PodUID   string `json:"pod_uid"`
+	DaemonIP string `json:"daemon_ip"`
+	NetNs    string `json:"net_ns"`
+	PodType  string `json:"pod_type"`
+	PodIP    string `json:"pod_ip"`
+	Deleting bool   `json:"deleting"`
+}
+
 // NetworkNodeSpec defines the desired state of NetworkNode
 type NetworkNodeSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
@@ -49,6 +58,8 @@ type NetworkNodeStatus struct {
 
 	// Phase equates to the phase of the network node, e.g. Pending, Running, Failed
 	Phase string `json:"phase,omitempty"`
+
+	PdStatus PodStatus `json:"pod_status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
