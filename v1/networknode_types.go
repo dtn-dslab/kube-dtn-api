@@ -42,6 +42,13 @@ func (n *NetworkNode) ToProto() *pb.NetworkNodeQuery {
 	}
 }
 
+type PodStatus struct {
+	DaemonIP string `json:"daemon_ip,omitempty"`
+	NetNs    string `json:"net_ns,omitempty"`
+	PodType  string `json:"pod_type,omitempty"`
+	PodIP    string `json:"pod_ip,omitempty"`
+}
+
 // NetworkNodeStatus defines the observed state of NetworkNode
 type NetworkNodeStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
@@ -49,6 +56,8 @@ type NetworkNodeStatus struct {
 
 	// Phase equates to the phase of the network node, e.g. Pending, Running, Failed
 	Phase string `json:"phase,omitempty"`
+
+	PdStatus PodStatus `json:"pod_status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
