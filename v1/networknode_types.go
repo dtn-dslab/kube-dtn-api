@@ -26,12 +26,13 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 type PodStatus struct {
-	PodUID   string `json:"pod_uid"`
-	DaemonIP string `json:"daemon_ip"`
-	NetNs    string `json:"net_ns"`
-	PodType  string `json:"pod_type"`
-	PodIP    string `json:"pod_ip"`
-	Deleting bool   `json:"deleting"`
+	PodUID         string `json:"pod_uid"`
+	DaemonNodeName string `json:"daemon_node_name"`
+	DaemonIP       string `json:"daemon_ip"`
+	NetNs          string `json:"net_ns"`
+	PodType        string `json:"pod_type"`
+	PodIP          string `json:"pod_ip"`
+	Deleting       bool   `json:"deleting"`
 }
 
 // NetworkNodeSpec defines the desired state of NetworkNode

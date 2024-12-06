@@ -23,50 +23,42 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// DPUBindingSpec defines the desired state of DPUBinding
-type DPUBindingSpec struct {
+// CNIExclusionSpec defines the desired state of CNIExclusion
+type CNIExclusionSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// DPU is the node name of the DPU node
-	// +kubebuilder:validation:Required
-	DPU string `json:"dpu"`
-
-	// Networks is the list of network ids to bind to the DPU for offloading
-	// +kubebuilder:validation:Required
-	Networks []int `json:"networks"` // Currently not used
+	// Foo is an example field of CNIExclusion. Edit cniexclusion_types.go to remove/update
+	Foo string `json:"foo,omitempty"`
 }
 
-// DPUBindingStatus defines the observed state of DPUBinding
-type DPUBindingStatus struct {
+// CNIExclusionStatus defines the observed state of CNIExclusion
+type CNIExclusionStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-
-	// Active indicates whether the DPUBinding is active
-	Active bool `json:"active"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
-// DPUBinding is the Schema for the dpubindings API
-type DPUBinding struct {
+// CNIExclusion is the Schema for the cniexclusions API
+type CNIExclusion struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   DPUBindingSpec   `json:"spec,omitempty"`
-	Status DPUBindingStatus `json:"status,omitempty"`
+	Spec   CNIExclusionSpec   `json:"spec,omitempty"`
+	Status CNIExclusionStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// DPUBindingList contains a list of DPUBinding
-type DPUBindingList struct {
+// CNIExclusionList contains a list of CNIExclusion
+type CNIExclusionList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []DPUBinding `json:"items"`
+	Items           []CNIExclusion `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&DPUBinding{}, &DPUBindingList{})
+	SchemeBuilder.Register(&CNIExclusion{}, &CNIExclusionList{})
 }

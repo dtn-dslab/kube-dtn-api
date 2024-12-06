@@ -3,7 +3,8 @@ package v1
 import (
 	"crypto/rand"
 	"fmt"
-	"time"
+
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 const (
@@ -56,12 +57,12 @@ const (
 type VersionStatus struct {
 	VersionId string `json:"version_id,omitempty"`
 
-	CreatedAt time.Time  `json:"created_at,omitempty"`
-	UpdatedAt time.Time  `json:"updated_at,omitempty"` // may not used
-	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	CreatedAt metav1.Time  `json:"created_at,omitempty"`
+	UpdatedAt metav1.Time  `json:"updated_at,omitempty"` // may not used
+	DeletedAt *metav1.Time `json:"deleted_at,omitempty"`
 }
 
-func NewVersionStatus(now time.Time) *VersionStatus {
+func NewVersionStatus(now metav1.Time) *VersionStatus {
 	tsInt := now.UnixNano()
 	randomBytes := make([]byte, 8)
 	rand.Read(randomBytes)

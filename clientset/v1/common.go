@@ -18,6 +18,8 @@ type Clientset struct {
 type Interface interface {
 	NetworkNode(namespace string) NetworkNodeInterface
 	PhysicalInterface(namespace string) PhysicalInterfaceInterface
+	DPUBinding(namespace string) DPUBindingInterface
+	KubeDTN(namespace string) KubeDTNInterface
 }
 
 // NewForConfig returns a new clientset for the given config
