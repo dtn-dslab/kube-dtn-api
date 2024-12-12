@@ -87,6 +87,16 @@ message PodQuery {
   string net_ns = 3;
 }
 
+message CNICmdArgs {
+  string ContainerID = 1;
+  string Netns = 2;
+  string IfName = 3;
+  string Args = 4;
+  string Path = 5;
+  string NetnsOverride = 6;
+  bytes StdinData = 7;
+}
+
 message InternalLink {
   int64 uid = 1;
 
@@ -200,4 +210,10 @@ service Daemon {
 
   rpc SetupPod (PodQuery) returns (BoolResponse);
   rpc DestroyPod (PodQuery) returns (BoolResponse);
+
+  rpc CNIAdd (CNICmdArgs) returns (BoolResponse);
+  rpc CNIDel (CNICmdArgs) returns (BoolResponse);
+  rpc CNICheck (CNICmdArgs) returns (BoolResponse);
+  rpc CNIGC (CNICmdArgs) returns (BoolResponse);
+  rpc CNIStatus (CNICmdArgs) returns (BoolResponse);
 }

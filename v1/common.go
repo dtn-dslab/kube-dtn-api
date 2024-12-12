@@ -6,9 +6,9 @@ const (
 
 	KubeDTNDaemonDefaultPodCNIFuncMark = "kubedtn.dslab.sjtu/default-cni-func"
 
-	// Please keep with the name in yaml config/daemon/daemon-host.yaml !
-	KubeDTNHostDaemonSetName = "kubedtn-host"
-	KubeDTNDPUDaemonSetName  = "kubedtn-dpu"
+	// Please keep with the name in yaml config/daemon/daemon-host.yaml. The prefix "kube-dtn-" is added in config/default/kustomization.yaml.
+	KubeDTNHostDaemonSetName = "kube-dtn-kubedtn-host"
+	KubeDTNDPUDaemonSetName  = "kube-dtn-kubedtn-dpu"
 
 	K8sNodeRoleKubeDTNKey       = "role"
 	K8sNodeRoleKubeDTNHostValue = "kubedtn-host"

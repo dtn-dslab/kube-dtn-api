@@ -28,8 +28,11 @@ type CNIExclusionSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of CNIExclusion. Edit cniexclusion_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// ExclusiveNamespace is a list of namespaces that are exclusive for CNI.
+	// User can specify more than one namespaces that are exclusive for CNI in one yaml.
+	// Effect: All "CNIExclusion" with all namespaces in "ExclusiveNamespaces" will be excluded from CNI, after the rule is created.
+	// +optional
+	ExclusiveNamespaces []string `json:"exclusive_namespaces,omitempty"`
 }
 
 // CNIExclusionStatus defines the observed state of CNIExclusion

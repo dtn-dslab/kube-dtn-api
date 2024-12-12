@@ -274,6 +274,11 @@ type DaemonClient interface {
 	UnconfigurePhysicalIntf(ctx context.Context, in *PhysicalIntf, opts ...grpc.CallOption) (*BoolResponse, error)
 	SetupPod(ctx context.Context, in *PodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
 	DestroyPod(ctx context.Context, in *PodQuery, opts ...grpc.CallOption) (*BoolResponse, error)
+	CNIAdd(ctx context.Context, in *CNICmdArgs, opts ...grpc.CallOption) (*BoolResponse, error)
+	CNIDel(ctx context.Context, in *CNICmdArgs, opts ...grpc.CallOption) (*BoolResponse, error)
+	CNICheck(ctx context.Context, in *CNICmdArgs, opts ...grpc.CallOption) (*BoolResponse, error)
+	CNIGC(ctx context.Context, in *CNICmdArgs, opts ...grpc.CallOption) (*BoolResponse, error)
+	CNIStatus(ctx context.Context, in *CNICmdArgs, opts ...grpc.CallOption) (*BoolResponse, error)
 }
 
 type daemonClient struct {
@@ -365,6 +370,51 @@ func (c *daemonClient) DestroyPod(ctx context.Context, in *PodQuery, opts ...grp
 	return out, nil
 }
 
+func (c *daemonClient) CNIAdd(ctx context.Context, in *CNICmdArgs, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
+	err := c.cc.Invoke(ctx, "/pb.Daemon/CNIAdd", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *daemonClient) CNIDel(ctx context.Context, in *CNICmdArgs, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
+	err := c.cc.Invoke(ctx, "/pb.Daemon/CNIDel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *daemonClient) CNICheck(ctx context.Context, in *CNICmdArgs, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
+	err := c.cc.Invoke(ctx, "/pb.Daemon/CNICheck", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *daemonClient) CNIGC(ctx context.Context, in *CNICmdArgs, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
+	err := c.cc.Invoke(ctx, "/pb.Daemon/CNIGC", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *daemonClient) CNIStatus(ctx context.Context, in *CNICmdArgs, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
+	err := c.cc.Invoke(ctx, "/pb.Daemon/CNIStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DaemonServer is the server API for Daemon service.
 // All implementations must embed UnimplementedDaemonServer
 // for forward compatibility
@@ -378,6 +428,11 @@ type DaemonServer interface {
 	UnconfigurePhysicalIntf(context.Context, *PhysicalIntf) (*BoolResponse, error)
 	SetupPod(context.Context, *PodQuery) (*BoolResponse, error)
 	DestroyPod(context.Context, *PodQuery) (*BoolResponse, error)
+	CNIAdd(context.Context, *CNICmdArgs) (*BoolResponse, error)
+	CNIDel(context.Context, *CNICmdArgs) (*BoolResponse, error)
+	CNICheck(context.Context, *CNICmdArgs) (*BoolResponse, error)
+	CNIGC(context.Context, *CNICmdArgs) (*BoolResponse, error)
+	CNIStatus(context.Context, *CNICmdArgs) (*BoolResponse, error)
 	mustEmbedUnimplementedDaemonServer()
 }
 
@@ -411,6 +466,21 @@ func (UnimplementedDaemonServer) SetupPod(context.Context, *PodQuery) (*BoolResp
 }
 func (UnimplementedDaemonServer) DestroyPod(context.Context, *PodQuery) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DestroyPod not implemented")
+}
+func (UnimplementedDaemonServer) CNIAdd(context.Context, *CNICmdArgs) (*BoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CNIAdd not implemented")
+}
+func (UnimplementedDaemonServer) CNIDel(context.Context, *CNICmdArgs) (*BoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CNIDel not implemented")
+}
+func (UnimplementedDaemonServer) CNICheck(context.Context, *CNICmdArgs) (*BoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CNICheck not implemented")
+}
+func (UnimplementedDaemonServer) CNIGC(context.Context, *CNICmdArgs) (*BoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CNIGC not implemented")
+}
+func (UnimplementedDaemonServer) CNIStatus(context.Context, *CNICmdArgs) (*BoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CNIStatus not implemented")
 }
 func (UnimplementedDaemonServer) mustEmbedUnimplementedDaemonServer() {}
 
@@ -587,6 +657,96 @@ func _Daemon_DestroyPod_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Daemon_CNIAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CNICmdArgs)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServer).CNIAdd(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Daemon/CNIAdd",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServer).CNIAdd(ctx, req.(*CNICmdArgs))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Daemon_CNIDel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CNICmdArgs)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServer).CNIDel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Daemon/CNIDel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServer).CNIDel(ctx, req.(*CNICmdArgs))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Daemon_CNICheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CNICmdArgs)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServer).CNICheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Daemon/CNICheck",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServer).CNICheck(ctx, req.(*CNICmdArgs))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Daemon_CNIGC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CNICmdArgs)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServer).CNIGC(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Daemon/CNIGC",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServer).CNIGC(ctx, req.(*CNICmdArgs))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Daemon_CNIStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CNICmdArgs)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServer).CNIStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Daemon/CNIStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServer).CNIStatus(ctx, req.(*CNICmdArgs))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Daemon_ServiceDesc is the grpc.ServiceDesc for Daemon service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -629,6 +789,26 @@ var Daemon_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DestroyPod",
 			Handler:    _Daemon_DestroyPod_Handler,
+		},
+		{
+			MethodName: "CNIAdd",
+			Handler:    _Daemon_CNIAdd_Handler,
+		},
+		{
+			MethodName: "CNIDel",
+			Handler:    _Daemon_CNIDel_Handler,
+		},
+		{
+			MethodName: "CNICheck",
+			Handler:    _Daemon_CNICheck_Handler,
+		},
+		{
+			MethodName: "CNIGC",
+			Handler:    _Daemon_CNIGC_Handler,
+		},
+		{
+			MethodName: "CNIStatus",
+			Handler:    _Daemon_CNIStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
